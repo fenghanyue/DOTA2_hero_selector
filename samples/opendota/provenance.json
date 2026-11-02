@@ -1,0 +1,32 @@
+{
+  "description": "Three real OpenDota ranked examples. source-fields.json contains excerpts; raw_file is null when the full response is not bundled. response_body_sha256 hashes the complete uncompressed response, not the excerpt.",
+  "samples": [
+    {
+      "match_id": 9072646333,
+      "url": "https://api.opendota.com/api/matches/9072646333",
+      "retrieved_at_utc": "2026-11-02T05:23:39.156452+00:00",
+      "http_status": 200,
+      "response_body_sha256": "a1f0aea7f2d6664ec94c5a7b534a1fc1a52f4ecea0803e869020bae56a40d27f",
+      "raw_file": "raw/match-9072646333.json.gz",
+      "source_fields_index": 0
+    },
+    {
+      "match_id": 9072646211,
+      "url": "https://api.opendota.com/api/matches/9072646211",
+      "retrieved_at_utc": "2026-11-02T05:23:41.556724+00:00",
+      "http_status": 200,
+      "response_body_sha256": "332f766fb52dbce8a931d656aa1a3e8b136f09724e298c7aea3e88eafc1163bc",
+      "raw_file": null,
+      "source_fields_index": 1
+    },
+    {
+      "match_id": 9072635162,
+      "url": "https://api.opendota.com/api/matches/9072635162",
+      "retrieved_at_utc": "2026-11-02T05:24:54.765495+00:00",
+      "http_status": 200,
+      "response_body_sha256": "ca931e704726be7212dd6bf11c695d33dc18ea0b02c32a3e2348c585432dbcee",
+      "raw_file": null,
+      "source_fields_index": 2
+    }
+  ]
+}

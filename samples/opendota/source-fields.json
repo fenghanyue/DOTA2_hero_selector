@@ -1,0 +1,266 @@
+[
+  {
+    "match_id": 9072646333,
+    "start_time": 1793594105,
+    "duration": 1829,
+    "game_mode": 22,
+    "lobby_type": 7,
+    "patch": 60,
+    "radiant_win": false,
+    "version": 22,
+    "od_data": {
+      "has_api": true,
+      "has_gcdata": true,
+      "has_parsed": true,
+      "has_archive": false
+    },
+    "players": [
+      {
+        "player_slot": 0,
+        "hero_id": 131,
+        "position_est": 5,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 1,
+        "hero_id": 123,
+        "position_est": 4,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 2,
+        "hero_id": 39,
+        "position_est": 2,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 3,
+        "hero_id": 97,
+        "position_est": 3,
+        "rank_tier": 80,
+        "leaver_status": 1
+      },
+      {
+        "player_slot": 4,
+        "hero_id": 48,
+        "position_est": 1,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 128,
+        "hero_id": 27,
+        "position_est": 4,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 129,
+        "hero_id": 30,
+        "position_est": 5,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 130,
+        "hero_id": 98,
+        "position_est": 3,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 131,
+        "hero_id": 54,
+        "position_est": 1,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 132,
+        "hero_id": 74,
+        "position_est": 2,
+        "rank_tier": 80,
+        "leaver_status": 0
+      }
+    ]
+  },
+  {
+    "match_id": 9072646211,
+    "start_time": 1793594090,
+    "duration": 1869,
+    "game_mode": 22,
+    "lobby_type": 7,
+    "patch": 60,
+    "radiant_win": false,
+    "version": 22,
+    "od_data": {
+      "has_api": true,
+      "has_gcdata": true,
+      "has_parsed": true,
+      "has_archive": false
+    },
+    "players": [
+      {
+        "player_slot": 0,
+        "hero_id": 49,
+        "position_est": 3,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 1,
+        "hero_id": 44,
+        "position_est": 1,
+        "rank_tier": 61,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 2,
+        "hero_id": 75,
+        "position_est": 5,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 3,
+        "hero_id": 31,
+        "position_est": 4,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 4,
+        "hero_id": 76,
+        "position_est": 2,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 128,
+        "hero_id": 18,
+        "position_est": 1,
+        "rank_tier": 75,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 129,
+        "hero_id": 105,
+        "position_est": 5,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 130,
+        "hero_id": 97,
+        "position_est": 4,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 131,
+        "hero_id": 7,
+        "position_est": 2,
+        "rank_tier": null,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 132,
+        "hero_id": 19,
+        "position_est": 3,
+        "rank_tier": 80,
+        "leaver_status": 0
+      }
+    ]
+  },
+  {
+    "match_id": 9072635162,
+    "start_time": 1793592905,
+    "duration": 2213,
+    "game_mode": 22,
+    "lobby_type": 7,
+    "patch": 60,
+    "radiant_win": true,
+    "version": 22,
+    "od_data": {
+      "has_api": true,
+      "has_gcdata": true,
+      "has_parsed": true,
+      "has_archive": false
+    },
+    "players": [
+      {
+        "player_slot": 0,
+        "hero_id": 53,
+        "position_est": 2,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 1,
+        "hero_id": 21,
+        "position_est": 1,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 2,
+        "hero_id": 9,
+        "position_est": 5,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 3,
+        "hero_id": 30,
+        "position_est": 4,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 4,
+        "hero_id": 97,
+        "position_est": 3,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 128,
+        "hero_id": 17,
+        "position_est": 2,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 129,
+        "hero_id": 14,
+        "position_est": 4,
+        "rank_tier": 75,
+        "leaver_status": 1
+      },
+      {
+        "player_slot": 130,
+        "hero_id": 5,
+        "position_est": 5,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 131,
+        "hero_id": 18,
+        "position_est": 1,
+        "rank_tier": 80,
+        "leaver_status": 0
+      },
+      {
+        "player_slot": 132,
+        "hero_id": 155,
+        "position_est": 3,
+        "rank_tier": null,
+        "leaver_status": 0
+      }
+    ]
+  }
+]
