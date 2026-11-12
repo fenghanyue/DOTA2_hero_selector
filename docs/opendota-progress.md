@@ -46,6 +46,7 @@
 
 ## 保存与恢复
 
+- 个人 OneDrive 已实际备份：`DOTA2_hero_selector/opendota/ranked-official-20261112-1000/`，原始归档与训练集等 11 个文件均已下载核对 SHA-256。[传输验证报告](../samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)。当前任务连接成功；新任务继承授权仍待环境保存后验收。
 - 代码、训练集和报告分支：`data/opendota-official-20261112`，供审阅后合并；未合并到 `main`。
 - [830 场最小数据](../samples/opendota/ranked-official-20261112-1000/matches.jsonl)、[来源清单](../samples/opendota/ranked-official-20261112-1000/provenance.json)、[导出报告](../samples/opendota/ranked-official-20261112-1000/report.json)、[独立审计](../samples/opendota/ranked-official-20261112-1000/audit.json)。
 - [完整原始备份](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)：独立分支 `data/opendota-backup-20261112`，两段共 31,221,754 字节，含 SQLite、完整原始响应、失败请求、CSV/JSONL、运行及测试日志。该目录 README 提供恢复步骤；本次已实际解压复核。
