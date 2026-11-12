@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect bounded match details from public summaries or already-parsed IDs."""
+"""Collect bounded OpenDota details, including official ranked role metadata."""
 from __future__ import annotations
 
 import argparse
@@ -26,6 +26,10 @@ API = 'https://api.opendota.com/api'
 TARGET_MODE = 22
 TARGET_LOBBY = 7
 RANK_BANDS = ('先锋', '卫士', '中军', '统帅', '传奇', '万古流芳', '超凡入圣', '冠绝一世')
+POSITION_SOURCE_OFFICIAL = 'valve_metadata_lane_selection_flags'
+POSITION_SOURCE_ESTIMATED = 'opendota_position_est'
+# Valve EDOTAMatchLaneSelection: safe, mid, off, soft support, hard support.
+OFFICIAL_FLAGS = {1: 1, 4: 2, 2: 3, 8: 4, 16: 5}
 
 
 def utc_now():
@@ -105,7 +109,65 @@ def event_count(player, field, seconds):
     return sum(0 <= e['time'] < seconds for e in events)
 
 
-def normalize_match(data, summary):
+def official_positions(data):
+    """Read Valve metadata; never substitute inferred roles for missing flags."""
+    metadata = data.get('metadata')
+    if isinstance(metadata, dict) and ('data' in metadata or 'error' in metadata):
+        if metadata.get('error') is not None:
+            return {}, 'metadata_fetch_error'
+        metadata = metadata.get('data')
+    if not isinstance(metadata, dict):
+        return {}, 'metadata_missing'
+    mid = metadata.get('match_id')
+    if not (integer(mid) or isinstance(mid, str)) or str(mid) != str(data.get('match_id')):
+        return {}, 'metadata_match_id_mismatch'
+    body = metadata.get('metadata')
+    teams = body.get('teams') if isinstance(body, dict) else None
+    if not isinstance(teams, list):
+        return {}, 'metadata_invalid_teams'
+    positions, seen = {}, set()
+    for team in teams:
+        if not isinstance(team, dict) or not integer(team.get('dota_team')):
+            return {}, 'metadata_invalid_teams'
+        side = team['dota_team']
+        if side not in (2, 3):
+            # Real metadata also carries empty custom-team placeholders (6–13).
+            if 'players' not in team or team['players'] == []:
+                continue
+            return {}, 'metadata_invalid_teams'
+        if side in seen:
+            return {}, 'metadata_invalid_teams'
+        seen.add(side)
+        players = team.get('players')
+        if not isinstance(players, list) or len(players) != 5:
+            return {}, 'metadata_invalid_players'
+        expected = set(range(5)) if side == 2 else set(range(128, 133))
+        slots, roles = set(), set()
+        for player in players:
+            if not isinstance(player, dict):
+                return {}, 'metadata_invalid_players'
+            slot = player.get('player_slot')
+            if not integer(slot) or slot not in expected or slot in slots:
+                return {}, 'metadata_invalid_slots'
+            flag = player.get('lane_selection_flags')
+            if flag is None:
+                return {}, 'official_role_missing'
+            if not integer(flag) or flag not in OFFICIAL_FLAGS:
+                return {}, 'official_role_not_single'
+            role = OFFICIAL_FLAGS[flag]
+            if role in roles:
+                return {}, 'official_roles_not_unique'
+            slots.add(slot)
+            roles.add(role)
+            positions[slot] = role
+    if seen != {2, 3}:
+        return {}, 'metadata_invalid_teams'
+    return positions, None
+
+
+def normalize_match(data, summary, role_source='estimated'):
+    if role_source not in ('official', 'estimated'):
+        raise ValueError('unknown role source')
     if not isinstance(data, dict) or data.get('match_id') != summary['match_id']:
         raise ValueError('response match_id does not match requested match')
     players = data.get('players')
@@ -120,16 +182,21 @@ def normalize_match(data, summary):
     target_match = data.get('game_mode') == TARGET_MODE and data.get('lobby_type') == TARGET_LOBBY
     valid_context = integer(data.get('start_time')) and integer(data.get('patch')) and integer(data.get('duration')) and data['duration'] >= 0
     basic_ok = bool(valid_slots and valid_heroes and valid_winner and target_match and valid_context)
+    official, official_error = official_positions(data) if role_source == 'official' else ({}, None)
     normalized_players = []
     for p in players:
         slot = p.get('player_slot')
         side = ('radiant' if slot < 128 else 'dire') if integer(slot) else None
         role = p.get('position_est')
         role_valid = integer(role) and role in range(1, 6)
+        position = official.get(slot) if role_source == 'official' else role if role_valid else None
         row = {
             'match_id': data['match_id'], 'player_slot': slot, 'side': side,
             'hero_id': p.get('hero_id'), 'position_est': role if role_valid else None,
-            'position_source': 'opendota_position_est' if role_valid else None,
+            'position': position,
+            'position_source': (POSITION_SOURCE_OFFICIAL if role_source == 'official' else
+                                POSITION_SOURCE_ESTIMATED) if position is not None else None,
+            'leaver_status': p.get('leaver_status'),
             'lane': p.get('lane'), 'lane_role': p.get('lane_role'),
             'is_roaming': p.get('is_roaming'),
         }
@@ -141,7 +208,7 @@ def normalize_match(data, summary):
             row[f'deaths_before_{seconds}'] = event_count(p, 'deaths_log', seconds)
         normalized_players.append(row)
     roles_complete = basic_ok and all(
-        {p['position_est'] for p in normalized_players if p['side'] == side} == set(range(1, 6))
+        {p['position'] for p in normalized_players if p['side'] == side} == set(range(1, 6))
         for side in ('radiant', 'dire')
     )
     lane_complete = basic_ok and all(
@@ -174,6 +241,9 @@ def normalize_match(data, summary):
         'rank_band_est': rank_band, 'rank_known_players': rank_known_players,
         'parse_version': data.get('version'), 'has_parsed': od.get('has_parsed'),
         'basic_ok': basic_ok, 'roles_complete': bool(roles_complete),
+        'role_source': role_source,
+        'official_roles_complete': bool(role_source == 'official' and roles_complete),
+        'official_role_error': official_error,
         'lane_complete': bool(lane_complete),
         'early_360_complete': bool(early_complete[360]),
         'early_420_complete': bool(early_complete[420]),
@@ -213,6 +283,8 @@ class Collector:
                 match_id INTEGER, url TEXT NOT NULL, status INTEGER,
                 headers TEXT, error TEXT, raw_path TEXT, sha256 TEXT);
         ''')
+        if 'elapsed_seconds' not in {r['name'] for r in self.db.execute('PRAGMA table_info(requests)')}:
+            self.db.execute('ALTER TABLE requests ADD COLUMN elapsed_seconds REAL')
         config = self.get_meta('config')
         if config is None:
             now = time.time()
@@ -220,6 +292,8 @@ class Collector:
                 'source': self.source,
                 'created_at': utc_now(), 'api_base': API, 'game_mode': TARGET_MODE,
                 'lobby_type': TARGET_LOBBY,
+                'role_source': 'official' if self.source == 'ranked' else 'estimated',
+                'min_duration': getattr(args, 'min_duration', 720) if self.source == 'ranked' else None,
                 'min_completed_age_hours': args.min_age_hours if self.source == 'public' else None,
                 'max_start_age_days': args.max_age_days if self.source == 'public' else None,
                 'earliest_start': int(now - args.max_age_days * 86400) if self.source == 'public' else None,
@@ -227,6 +301,8 @@ class Collector:
                 'sampling_frame': (
                     'publicMatches summaries filtered before detail requests; not preselected for parsing'
                     if self.source == 'public' else
+                    'public_matches ranked all-pick IDs with minimum duration; official Valve metadata roles'
+                    if self.source == 'ranked' else
                     'parsedMatches IDs; all modes and ages fetched, ranked all-pick evaluated in details'),
                 'daily_request_budget': args.daily_budget, 'daily_reserve': args.daily_reserve,
                 'requests_per_minute': args.rpm,
@@ -234,7 +310,8 @@ class Collector:
             self.set_meta('config', config)
             write_json(self.output / 'config.json', config)
         if (config['game_mode'] != TARGET_MODE or config['lobby_type'] != TARGET_LOBBY
-                or config.get('source', 'public') != self.source):
+                or config.get('source', 'public') != self.source
+                or (self.source == 'ranked' and config.get('min_duration') != getattr(args, 'min_duration', 720))):
             self.db.close()
             self.lock.close()
             raise ValueError('output directory contains an incompatible cohort')
@@ -242,6 +319,7 @@ class Collector:
         self.next_request = 0.0
         self.last_export = time.monotonic()
         self.started = time.monotonic()
+        self.started_at = utc_now()
         self.set_meta('detail_limit', args.detail_limit)
 
     def get_meta(self, key, default=None):
@@ -256,6 +334,9 @@ class Collector:
         url = API + endpoint
         last_error = None
         for attempt in range(3):
+            limit = getattr(self.args, 'request_limit', None)
+            if limit is not None and self.db.execute('SELECT COUNT(*) FROM requests').fetchone()[0] >= limit:
+                raise PauseCollection('total_request_budget_reached')
             today = dt.datetime.now(dt.timezone.utc).date().isoformat()
             used = self.db.execute('SELECT COUNT(*) FROM requests WHERE substr(started_at,1,10)=?', (today,)).fetchone()[0]
             if used >= self.args.daily_budget:
@@ -274,6 +355,7 @@ class Collector:
                 (utc_now(), kind, match_id, url)).lastrowid
             self.db.commit()
             status, body, headers, error = None, b'', {}, None
+            request_started = time.monotonic()
             try:
                 req = urllib.request.Request(url, headers={'User-Agent': 'DOTA2-hero-selector-collector/0.1', 'Accept': 'application/json'})
                 with urllib.request.urlopen(req, timeout=25) as response:
@@ -287,13 +369,14 @@ class Collector:
                 error = f'HTTP {status}'
             except (urllib.error.URLError, TimeoutError, OSError) as exc:
                 error = str(exc)
+            elapsed = time.monotonic() - request_started
             raw_path = None
             if body:
                 raw_path = f'raw/http/{request_id:06d}-{kind}-{match_id or "page"}.json.gz'
                 atomic_bytes(self.output / raw_path, gzip.compress(body, mtime=0))
-            self.db.execute('UPDATE requests SET status=?,headers=?,error=?,raw_path=?,sha256=? WHERE id=?',
+            self.db.execute('UPDATE requests SET status=?,headers=?,error=?,raw_path=?,sha256=?,elapsed_seconds=? WHERE id=?',
                             (status, json.dumps(headers), error, raw_path,
-                             hashlib.sha256(body).hexdigest() if body else None, request_id))
+                             hashlib.sha256(body).hexdigest() if body else None, elapsed, request_id))
             self.db.commit()
             if headers:
                 self.set_meta('last_response_headers', headers)
@@ -305,7 +388,8 @@ class Collector:
                     last_error = f'invalid_json: {exc}'
                 else:
                     return payload, {'request_id': request_id, 'url': url, 'raw_path': raw_path,
-                                     'sha256': hashlib.sha256(body).hexdigest(), 'headers': headers}
+                                     'sha256': hashlib.sha256(body).hexdigest(), 'headers': headers,
+                                     'elapsed_seconds': elapsed}
             else:
                 last_error = error or f'HTTP {status}'
             if status in (401, 403):
@@ -332,9 +416,20 @@ class Collector:
         if pages >= self.args.max_list_pages:
             raise PauseCollection('max_list_pages_reached')
         cursor = self.get_meta('cursor')
-        query = '?' + urllib.parse.urlencode({'less_than_match_id': cursor}) if cursor else ''
-        endpoint = '/publicMatches' if self.source == 'public' else '/parsedMatches'
-        payload, _ = self.request(endpoint + query, 'list')
+        if self.source == 'ranked':
+            sql = ('SELECT match_id,start_time,duration,game_mode,lobby_type,avg_rank_tier,num_rank_tier '
+                   f'FROM public_matches WHERE lobby_type={TARGET_LOBBY} AND game_mode={TARGET_MODE} '
+                   f'AND duration>={self.config["min_duration"]}'
+                   + (f' AND match_id<{cursor}' if cursor is not None else '')
+                   + ' ORDER BY match_id DESC LIMIT 100')
+            response, _ = self.request('/explorer?' + urllib.parse.urlencode({'sql': sql}), 'list')
+            if not isinstance(response, dict) or response.get('err'):
+                raise PauseCollection('ranked_explorer_error')
+            payload = response.get('rows')
+        else:
+            query = '?' + urllib.parse.urlencode({'less_than_match_id': cursor}) if cursor else ''
+            endpoint = '/publicMatches' if self.source == 'public' else '/parsedMatches'
+            payload, _ = self.request(endpoint + query, 'list')
         if not isinstance(payload, list) or not payload:
             raise PauseCollection(f'{self.source}_match_list_empty')
         ids = [x.get('match_id') for x in payload if isinstance(x, dict)
@@ -374,12 +469,13 @@ class Collector:
             if cached.exists():
                 payload = json.loads(gzip.decompress(cached.read_bytes()))
             else:
-                payload, provenance = self.request(f'/matches/{mid}', 'detail', mid)
+                endpoint = f'/matches/{mid}' + ('?meta=1' if self.source == 'ranked' else '')
+                payload, provenance = self.request(endpoint, 'detail', mid)
                 # Keep the exact response bytes, not a re-serialized approximation.
                 source_path = self.output / provenance['raw_path']
                 atomic_bytes(cached, source_path.read_bytes())
                 write_json(self.output / f'raw/matches/{mid}.source.json', provenance)
-            result = normalize_match(payload, summary)
+            result = normalize_match(payload, summary, 'official' if self.source == 'ranked' else 'estimated')
             self.db.execute('UPDATE candidates SET status=?,normalized=?,error=NULL WHERE match_id=?',
                             ('ok', json.dumps(result, ensure_ascii=False), mid))
         except PauseCollection:
@@ -395,10 +491,21 @@ class Collector:
     def export(self, status, reason=None):
         results = self.results()
         fields = ['basic_ok', 'has_parsed', 'roles_complete', 'lane_complete', 'early_360_complete',
-                  'early_420_complete', 'events_before_420_complete', 'position_training_ready', 'laning_metrics_ready']
-        counts = {field: sum(r['match'][field] is True for r in results) for field in fields}
+                  'early_420_complete', 'events_before_420_complete', 'position_training_ready', 'laning_metrics_ready',
+                  'official_roles_complete']
+        counts = {field: sum(r['match'].get(field) is True for r in results) for field in fields}
+        timing = {}
+        for kind in ('list', 'detail'):
+            values = sorted(r[0] for r in self.db.execute(
+                'SELECT elapsed_seconds FROM requests WHERE kind=? AND elapsed_seconds IS NOT NULL', (kind,)))
+            timing[kind] = {'count': len(values), 'mean_seconds': sum(values) / len(values) if values else None,
+                            'p50_seconds': values[(len(values) - 1) // 2] if values else None,
+                            'p95_seconds': values[math.ceil(len(values) * .95) - 1] if values else None}
         stats = {
             'status': status, 'reason': reason, 'updated_at': utc_now(),
+            'run_started_at': self.started_at, 'run_elapsed_seconds': time.monotonic() - self.started,
+            'request_limit': getattr(self.args, 'request_limit', None),
+            'request_timing': timing,
             'detail_limit': self.args.detail_limit,
             'unique_details_attempted': self.db.execute('SELECT COUNT(*) FROM candidates WHERE attempted=1').fetchone()[0],
             'successful_detail_responses': len(results),
@@ -411,6 +518,9 @@ class Collector:
             'http_list_requests': self.db.execute('SELECT COUNT(*) FROM requests WHERE kind="list"').fetchone()[0],
             'last_response_headers': self.get_meta('last_response_headers', {}),
             'quality_counts': counts,
+            'official_role_errors': dict(collections.Counter(r['match']['official_role_error'] for r in results
+                                                            if r['match'].get('official_role_error'))),
+            'http_status_counts': {str(r[0]): r[1] for r in self.db.execute('SELECT status,COUNT(*) FROM requests GROUP BY status')},
             'rates_over_successful_details': {field: counts[field] / len(results) if results else None for field in fields},
             'patch_counts': dict(collections.Counter(str(r['match']['patch']) for r in results)),
             'detail_mode_counts': dict(collections.Counter(f'{r["match"]["game_mode"]}/{r["match"]["lobby_type"]}' for r in results)),
@@ -423,7 +533,7 @@ class Collector:
             for name, rows in [('matches.csv', [r['match'] for r in results]),
                                ('players.csv', [p for r in results for p in r['players']])]:
                 buffer = io.StringIO(newline='')
-                writer = csv.DictWriter(buffer, fieldnames=list(rows[0]), lineterminator='\n')
+                writer = csv.DictWriter(buffer, fieldnames=list(dict.fromkeys(k for row in rows for k in row)), lineterminator='\n')
                 writer.writeheader()
                 writer.writerows(rows)
                 atomic_bytes(self.output / name, buffer.getvalue().encode('utf-8-sig'))
@@ -468,12 +578,14 @@ class Collector:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', default='data/opendota/pilot-1000')
-    parser.add_argument('--source', choices=['public', 'parsed'], default='public',
-                        help='parsed fetches all listed IDs; evaluate target mode after fetching details')
+    parser.add_argument('--source', choices=['public', 'parsed', 'ranked'], default='public',
+                        help='ranked uses explorer IDs and official role metadata; parsed fetches all modes')
     parser.add_argument('--detail-limit', type=int, default=1000)
     parser.add_argument('--rpm', type=float, default=50)
     parser.add_argument('--daily-budget', type=int, default=2700)
     parser.add_argument('--daily-reserve', type=int, default=100)
+    parser.add_argument('--request-limit', type=int, help='cumulative request cap, including lists and retries across days')
+    parser.add_argument('--min-duration', type=int, default=720, help='ranked discovery minimum duration in seconds')
     parser.add_argument('--min-age-hours', type=float, default=2)
     parser.add_argument('--max-age-days', type=float, default=7)
     parser.add_argument('--max-list-pages', type=int, default=1000)
@@ -482,6 +594,8 @@ def main(argv=None):
         parser.error('invalid limits: RPM must be 0–50 and budgets positive')
     if args.min_age_hours < 0 or args.max_age_days <= args.min_age_hours / 24:
         parser.error('invalid age window')
+    if args.min_duration < 0 or args.max_list_pages <= 0 or (args.request_limit is not None and args.request_limit <= 0):
+        parser.error('invalid duration, pages or total request limit')
     return Collector(args).run()
 
 
