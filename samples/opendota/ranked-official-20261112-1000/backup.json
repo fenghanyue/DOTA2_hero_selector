@@ -1,0 +1,27 @@
+{
+  "backup_branch": "data/opendota-backup-20261112",
+  "source_directory": "data/opendota/ranked-official-20261112-1000",
+  "archive_name": "ranked-official-20261112-1000.tar.zst",
+  "archive_sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5",
+  "archive_bytes": 31221754,
+  "source_manifest_sha256": "c936b9c8615ba9f07c1fcfe71c2e6e7f055e858dae89a147e9d372fe8ad50e6e",
+  "source_files_checked": 3033,
+  "successful_details": 969,
+  "accepted_matches": 830,
+  "http_requests": 1084,
+  "parts": [
+    {
+      "path": "backups/20261112/ranked-official-20261112-1000.tar.zst.part-00",
+      "bytes": 25165824,
+      "sha256": "16a3d1c718f963ac86ae1e5f242a00c68fe00dba927f01a7b3a445e116f6434f"
+    },
+    {
+      "path": "backups/20261112/ranked-official-20261112-1000.tar.zst.part-01",
+      "bytes": 6055930,
+      "sha256": "db06e4366cd49b1b86395182556ad3407849ef24e8c74dc9bd8edd30150c1733"
+    }
+  ],
+  "backup_commit": "1b4b304ad5a13ea124257f363fcf36288eca6479",
+  "remote_ref_verified": true,
+  "backup_url": "https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112"
+}

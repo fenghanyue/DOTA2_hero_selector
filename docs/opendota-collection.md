@@ -15,7 +15,7 @@ python scripts/collect_opendota.py --source ranked \
 
 链路为 `GET /explorer?sql=...` 查询 `public_matches`，预选 `lobby_type=7 AND game_mode=22 AND duration>=720`，按 ID 递减分页，每页至多 100 场；随后请求 `GET /matches/{id}?meta=1`。没有提交新增录像解析任务，也不下载完整录像。
 
-`--detail-limit` 是该目录累计处理的不同 ID 上限，成功和最终失败都计数；它不是合格场数。每个详情最多尝试 3 次，重试、列表请求也占预算。`--request-limit` 限制该目录跨日累计请求；`--daily-budget` 限制该目录 UTC 单日请求。`--daily-reserve` 根据服务端日剩余额度保留 100 次；其他进程的消耗以响应头为准。`--rpm` 最高 50。
+`--detail-limit` 是该目录累计处理的不同 ID 上限，成功和最终失败都计数；它不是合格场数。一次请求循环最多尝试 3 次；限流暂停时该 ID 保持待处理，续跑可以再尝试，所有重试、列表请求都占累计预算。`--request-limit` 限制该目录跨日累计请求；`--daily-budget` 限制该目录 UTC 单日请求。`--daily-reserve` 根据服务端日剩余额度保留 100 次；其他进程的消耗以响应头为准。`--rpm` 最高 50。
 
 达到任一预算、页数或服务端限制会保存进度并停止；不会次日自动运行。再次运行相同命令沿用游标、缓存和状态，已成功详情不重下。一个目录只允许一个采集进程，不同来源或最低时长不能混用同一目录。
 

@@ -1,0 +1,139 @@
+{
+  "status": "detail_trial_complete",
+  "reason": null,
+  "updated_at": "2026-11-12T04:05:19.731127+00:00",
+  "run_started_at": "2026-11-12T03:36:59.064346+00:00",
+  "run_elapsed_seconds": 1700.6668042429997,
+  "request_limit": 1500,
+  "request_timing": {
+    "list": {
+      "count": 10,
+      "mean_seconds": 0.1844074680999938,
+      "p50_seconds": 0.06594610000001921,
+      "p95_seconds": 1.0597643299997799
+    },
+    "detail": {
+      "count": 1074,
+      "mean_seconds": 1.7008190904050218,
+      "p50_seconds": 1.150209139999788,
+      "p95_seconds": 4.442434136999964
+    }
+  },
+  "detail_limit": 1000,
+  "unique_details_attempted": 1000,
+  "successful_detail_responses": 969,
+  "failed_details": 31,
+  "pending_candidates": 0,
+  "list_pages": 10,
+  "summaries_seen": 1000,
+  "summary_filters": {},
+  "http_requests": 1084,
+  "http_detail_requests": 1074,
+  "http_list_requests": 10,
+  "last_response_headers": {
+    "date": "Thu, 12 Nov 2026 04:05:19 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "x-rate-limit-remaining-minute": "44",
+    "x-rate-limit-remaining-day": "1791"
+  },
+  "quality_counts": {
+    "basic_ok": 969,
+    "has_parsed": 8,
+    "roles_complete": 881,
+    "lane_complete": 8,
+    "early_360_complete": 8,
+    "early_420_complete": 8,
+    "events_before_420_complete": 8,
+    "position_training_ready": 881,
+    "laning_metrics_ready": 6,
+    "official_roles_complete": 881
+  },
+  "official_role_errors": {
+    "official_role_not_single": 59,
+    "metadata_missing": 29
+  },
+  "http_status_counts": {
+    "None": 5,
+    "200": 979,
+    "429": 6,
+    "500": 94
+  },
+  "rates_over_successful_details": {
+    "basic_ok": 1.0,
+    "has_parsed": 0.008255933952528379,
+    "roles_complete": 0.9091847265221878,
+    "lane_complete": 0.008255933952528379,
+    "early_360_complete": 0.008255933952528379,
+    "early_420_complete": 0.008255933952528379,
+    "events_before_420_complete": 0.008255933952528379,
+    "position_training_ready": 0.9091847265221878,
+    "laning_metrics_ready": 0.006191950464396285,
+    "official_roles_complete": 0.9091847265221878
+  },
+  "patch_counts": {
+    "60": 969
+  },
+  "detail_mode_counts": {
+    "22/7": 969
+  },
+  "estimated_two_vs_two_lanes": 13,
+  "failed_detail_examples": [
+    {
+      "match_id": 9086424449,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424451,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424683,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424860,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424900,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425003,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425173,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425388,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425570,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425884,
+      "error": "HTTP 500"
+    }
+  ],
+  "config": {
+    "source": "ranked",
+    "created_at": "2026-11-12T03:18:25.752145+00:00",
+    "api_base": "https://api.opendota.com/api",
+    "game_mode": 22,
+    "lobby_type": 7,
+    "role_source": "official",
+    "min_duration": 720,
+    "min_completed_age_hours": null,
+    "max_start_age_days": null,
+    "earliest_start": null,
+    "latest_end": null,
+    "sampling_frame": "public_matches ranked all-pick IDs with minimum duration; official Valve metadata roles",
+    "daily_request_budget": 1500,
+    "daily_reserve": 100,
+    "requests_per_minute": 50.0
+  }
+}

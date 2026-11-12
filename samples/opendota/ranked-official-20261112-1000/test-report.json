@@ -1,0 +1,9 @@
+{
+  "command": "python -m unittest discover -s tests -v",
+  "passed": true,
+  "tests": 29,
+  "completed_at": "2026-11-12T03:24:27.691588+00:00",
+  "tested_code_commit": "69a8964a66c47534a915f1eb08c1611ac927f548",
+  "log_sha256": "6f006ff16d963a99905c1edf022edb7ae896e8b05c156fc00ff244c1b1428e6b",
+  "scope": "offline unit tests, including one captured real metadata response; no device or model validation"
+}

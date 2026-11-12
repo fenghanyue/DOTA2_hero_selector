@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-11-12T04:08:45.480894+00:00",
+  "passed": true,
+  "file_sha256_checks": 3033,
+  "file_mismatches": [],
+  "restored_cohort_audit": {
+    "created_at": "2026-11-12T04:08:45.460255+00:00",
+    "passed": true,
+    "errors": [],
+    "http_responses_checked": 1084,
+    "successful_details_checked": 969,
+    "failed_detail_ids": 31,
+    "official_roles_complete": 881,
+    "unparsed_successful_details": 961,
+    "training_matches_checked": 830,
+    "metadata_team_count_distribution": {
+      "10": 940,
+      "0": 29
+    },
+    "minimum_request_interval_seconds": 1.199044,
+    "checks": [
+      "all HTTP and cached raw SHA-256",
+      "DB / JSONL / both CSVs",
+      "independent Valve flag mapping and hero ordering",
+      "independent rank median",
+      "independent patch / duration / leaver screening",
+      "request budget and pacing",
+      "dataset SHA-256, unique IDs and accepted provenance"
+    ]
+  }
+}
