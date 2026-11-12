@@ -14,6 +14,7 @@ from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / 'scripts'))
 from export_opendota_training import export_training
+from audit_opendota_official import audit
 from test_opendota_collection import args, collector_module as collector, fixture
 
 
@@ -34,6 +35,20 @@ def official_fixture():
 
 
 class OfficialRolesTests(unittest.TestCase):
+    def test_real_unparsed_response_with_empty_custom_teams(self):
+        folder = pathlib.Path(__file__).resolve().parents[1] / 'samples/opendota/ranked-official-20261112-1000/raw'
+        payload = gzip.decompress((folder / 'match-9086431243.json.gz').read_bytes())
+        provenance = json.loads((folder / 'match-9086431243.source.json').read_text())
+        self.assertEqual(hashlib.sha256(payload).hexdigest(), provenance['sha256'])
+        raw = json.loads(payload)
+        self.assertFalse(raw['od_data']['has_parsed'])
+        self.assertEqual(len(raw['metadata']['data']['metadata']['teams']), 10)
+        normalized = collector.normalize_match(raw, {'match_id': 9086431243}, 'official')
+        self.assertTrue(normalized['match']['official_roles_complete'])
+        ordered = sorted(normalized['players'], key=lambda p: p['position'])
+        self.assertEqual([p['hero_id'] for p in ordered if p['side'] == 'radiant'], [73, 47, 29, 14, 9])
+        self.assertEqual([p['hero_id'] for p in ordered if p['side'] == 'dire'], [145, 76, 104, 39, 100])
+
     def test_unparsed_match_with_ten_metadata_teams_has_all_official_roles(self):
         raw, summary = official_fixture()
         result = collector.normalize_match(raw, summary, 'official')
@@ -200,6 +215,20 @@ class RankedPersistenceTests(unittest.TestCase):
                 export_training(source, output, 60)
             with self.assertRaisesRegex(ValueError, 'outside'):
                 export_training(source, source / 'export', 60)
+
+    def test_independent_audit_accepts_real_archive_structure_and_catches_csv_corruption(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, output = pathlib.Path(directory) / 'source', pathlib.Path(directory) / 'output'
+            self.create_detail(source)
+            export_training(source, output, 60)
+            report = audit(source, output)
+            self.assertTrue(report['passed'], report['errors'])
+            self.assertEqual(report['metadata_team_count_distribution'], {'10': 1})
+            csv_file = source / 'players.csv'
+            csv_file.write_text(csv_file.read_text(encoding='utf-8-sig').replace('valve_metadata_lane_selection_flags', 'wrong'), encoding='utf-8-sig')
+            report = audit(source, output)
+            self.assertFalse(report['passed'])
+            self.assertIn('DB / players.csv mismatch', report['errors'])
 
 
 if __name__ == '__main__':
