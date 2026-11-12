@@ -7,6 +7,7 @@
 - [OpenDota 数据进展与初版方案](docs/opendota-progress.md)
 - [采集脚本使用说明](docs/opendota-collection.md)
 - [真实样例与字段说明](samples/opendota/README.md)
+- [个人 OneDrive：Mac 授权与云环境复用](docs/onedrive-backup.md)
 
 Python 3.10 及以上，无第三方包依赖。在仓库根目录运行：
 
