@@ -73,6 +73,16 @@ class OneDriveTests(unittest.TestCase):
             self.assertEqual(stat.S_IMODE(output.stat().st_mode), 0o600)
             self.assertEqual(stat.S_IMODE(parent.stat().st_mode), 0o755)
 
+    def test_installed_helper_also_refuses_credentials_in_a_separate_checkout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            checkout = pathlib.Path(directory) / 'checkout'
+            (checkout / '.git').mkdir(parents=True)
+            with patch.object(backup, 'REPOSITORY', pathlib.Path(directory) / 'installed-tools'):
+                with self.assertRaises(backup.BackupError):
+                    backup.restore_config(checkout / 'private/rclone.conf', {})
+                with self.assertRaises(backup.BackupError):
+                    backup.private_write(checkout / 'private/value.txt', b'fake')
+
     def test_manifest_only_published_after_all_remote_files_are_verified(self):
         with tempfile.TemporaryDirectory() as directory:
             root = pathlib.Path(directory)

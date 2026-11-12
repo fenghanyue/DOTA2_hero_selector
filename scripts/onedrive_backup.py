@@ -48,10 +48,16 @@ def validate_config(payload):
         raise BackupError('授权配置无效；请只导出 dota_onedrive 这个个人 OneDrive 连接。') from None
 
 
-def private_write(path, payload):
+def private_path(path):
     path = pathlib.Path(path).resolve()
-    if path == REPOSITORY or REPOSITORY in path.parents:
+    if (path == REPOSITORY or REPOSITORY in path.parents
+            or any((parent / '.git').exists() for parent in path.parents)):
         raise BackupError('授权文件必须保存在 Git 仓库之外。')
+    return path
+
+
+def private_write(path, payload):
+    path = private_path(path)
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     fd, temporary = tempfile.mkstemp(prefix='.onedrive-', dir=path.parent)
     try:
@@ -65,9 +71,7 @@ def private_write(path, payload):
 
 def restore_config(path=CONFIG_PATH, environ=None):
     environ = os.environ if environ is None else environ
-    path = pathlib.Path(path).resolve()
-    if path == REPOSITORY or REPOSITORY in path.parents:
-        raise BackupError('授权文件必须保存在 Git 仓库之外。')
+    path = private_path(path)
     encoded = environ.get(SECRET_KEY)
     marker = path.with_suffix('.seed-sha256')
     if encoded:
