@@ -20,4 +20,4 @@ python -m unittest discover -s tests -v
 
 完整运行数据保存在云工作区的 `data/`，默认由 Git 忽略；训练数据和报告需显式提交到 `samples/`，完整原始数据另做 GitHub 归档。目录存在于云环境不等于已经保存到你的电脑或 GitHub。历史计数与当前可恢复数据请以进展文档中最新日期的记录为准。
 
-2026-11-12 批次已另存个人 OneDrive，11 个文件全部通过上传后回读 SHA-256 校验；[传输报告](samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)已保留。用户已 Promote 变量设置，实际新任务自动恢复连接仍待验收。
+2026-11-12 批次已另存个人 OneDrive，11 个文件全部通过上传后回读 SHA-256 校验；[传输报告](samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)已保留。用户在新任务验收确认授权自动注入并可恢复；备份工具未随环境恢复，临时补装后连接成功。工具固化尚未通过，需在环境编辑中保存安装和启动追加段、重新发布后再次验收。
