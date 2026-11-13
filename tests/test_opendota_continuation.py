@@ -72,6 +72,16 @@ class ContinuationTests(unittest.TestCase):
             claim.assert_not_called()
             collect.assert_not_called()
 
+    def test_new_worker_stops_if_a_completed_batch_already_found_a_patch_change(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(continuation, 'load_helper'), patch.object(
+                continuation, 'inventory', return_value=({1: row()}, {'patch_changed': True})), patch.object(
+                continuation, 'claim_slot') as claim, patch.object(continuation, 'collect') as collect:
+            result = continuation.run(pathlib.Path(directory))
+            self.assertEqual(result['status'], 'patch_changed')
+            self.assertTrue(result['patch_changed'])
+            claim.assert_not_called()
+            collect.assert_not_called()
+
     def test_arbitrary_old_slot_cannot_issue_new_requests(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(continuation, 'ROOT', pathlib.Path(directory)), patch.object(
                 continuation, 'load_helper'), patch.object(continuation, 'inventory', return_value=({1: row()}, {'completed_batches': []})), patch.object(

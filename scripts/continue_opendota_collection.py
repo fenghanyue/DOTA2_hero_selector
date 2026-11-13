@@ -105,6 +105,7 @@ def inventory(backup, config, cache):
     if ORIGINAL not in names:
         raise ContinuationError('Original 830-match batch is missing; refusing to reset the count.')
     datasets, completed, unfinished = [], [], []
+    patch_changed = False
     for batch in names:
         loaded = backup.load_manifest(config, batch, READ_METHOD, missing_ok=True)
         if loaded is None:
@@ -126,10 +127,11 @@ def inventory(backup, config, cache):
                 or len({r['match_id'] for r in rows}) != len(rows)):
             raise ContinuationError(f'Count, export SHA-256, or audit mismatch: {batch}')
         datasets.append(rows)
+        patch_changed |= bool(report.get('rejection_reason_counts_overlap', {}).get('other_patch'))
         completed.append({'batch': batch, 'accepted_matches': len(rows), 'manifest_sha256': manifest_sha})
     unique, duplicates = merge_rows(datasets)
     return unique, {'completed_batches': completed, 'unfinished_batches': unfinished,
-                    'duplicate_rows_not_counted': duplicates}
+                    'duplicate_rows_not_counted': duplicates, 'patch_changed': patch_changed}
 
 
 def claim_slot(backup, config, batch, source):
@@ -244,6 +246,8 @@ def run(work, batch=None):
     result = {'target': TARGET, 'verified_unique_before': len(known), **before}
     if len(known) >= TARGET:
         return result | {'status': 'target_reached', 'verified_unique_matches': len(known)}
+    if before.get('patch_changed'):
+        return result | {'status': 'patch_changed', 'verified_unique_matches': len(known)}
     batch = batch or slot_batch(dt.datetime.now(dt.timezone.utc))
     if not BATCH_PATTERN.fullmatch(batch):
         raise ContinuationError('Invalid six-hour UTC slot batch.')
