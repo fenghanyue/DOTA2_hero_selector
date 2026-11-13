@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Append this block to the existing environment install script; keep its current duties.
 set -euo pipefail
-python3 - <<'PY'
+env -u ONEDRIVE_RCLONE_CONFIG_B64 python3 - <<'PY'
 import hashlib
 import json
 import os
@@ -10,12 +10,12 @@ import subprocess
 import tempfile
 import urllib.request
 
-revision = 'b85058f4d76822fa614a3e9d0f6f2c053a54a4a2'
+revision = '8fc440417014c3a249ad5186a0c3f5b826c571ab'
 root = pathlib.Path('/workspace/.cloud-environment/onedrive-tools')
 root.mkdir(parents=True, exist_ok=True)
 sources = {
     'install_rclone.py': '5f0588eaccaf5055bc58e4095948f3a25d7649ae3d1eb6b2f464d6552647694f',
-    'onedrive_backup.py': '86364ba2bfe0632b1f82fb595316e491e49b2f1bf1fa8e81927264bff8712b79',
+    'onedrive_backup.py': '3bbb9dc61f8e1e25cc2432514be128265ebc833940760a3bde09e130c0367408',
 }
 for name, expected in sources.items():
     target = root / name
