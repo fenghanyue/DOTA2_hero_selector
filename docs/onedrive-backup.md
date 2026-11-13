@@ -1,12 +1,12 @@
-# 个人 OneDrive：Mac 授权与云环境复用
+# 个人 OneDrive：云端备份与恢复
 
-2026-11-12：当前云任务已完成个人 OneDrive 的真实连接和首批备份验证。原始归档与训练数据等 11 个文件共 31,669,996 字节，全部逐文件下载并通过 SHA-256 校验，完成清单也已回读通过。[实际传输报告](../samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)
+2026-11-13：用户新任务已验收工具、rclone 1.76.0 和个人授权自动恢复。本次新增现成的 `upload`、`verify`、`restore` 命令，在独立批次实测上传、完整回读、下载到新目录及重复上传，均通过大小和 SHA-256 校验。每阶段 11 个文件、31,669,996 字节；恢复落盘后的文件也重新核对通过。[整条存取流程实测报告](../samples/opendota/ranked-official-20261112-1000/onedrive-storage-e2e-20261113.json)
 
-OneDrive 内的位置为 `DOTA2_hero_selector/opendota/ranked-official-20261112-1000/`。用户随后在新任务验收确认：授权变量自动注入、格式有效，仓库外 0600 授权文件恢复成功；工具固化未通过。新任务只有原有 rclone 1.60.1，缺少专用脚本和固定的 rclone 1.76.0；临时补齐后连接成功，剩余约 579.18 GB，既有备份清单与 GitHub 一致、抽查文件 SHA-256 通过，无需更新保管库。这是用户提供的新任务实测结果；临时补装不计为工具自动恢复通过。
+原始数据位置仍为 `DOTA2_hero_selector/opendota/ranked-official-20261112-1000/`，最初的[上传报告](../samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)保持不变。集成验收批次 `storage-e2e-20261113T054634Z-singlepart` 是这批数据的相同副本，不新增比赛，不额外计入 830 场训练样本。早期失败测试留下的两个零字节批次已清理。
 
-新任务恢复出的 `/workspace/.cloud-environment/install.sh` 和 `/workspace/.cloud-environment/start.md` 均缺少 OneDrive 追加段。原任务中已有相同追加段，但没有保存进可复用环境并重新发布；Promote 后授权设置可用，工具安装与启动配置仍需按第 4 节补齐。云端规则入口的旧缓存也仍待处理，读取远端默认分支规则不等于已更新发布快照。
+当前环境中的预认证下载和分块上传曾返回 401，根因尚未确定。用户已确认临时方案：上传继续用 rclone，但对不超过 **200 MiB** 的文件走正式 Graph 单次上传；回读校验和恢复显式使用 `--read-method graph-contentstream`。[contentStream 属于 beta，微软不支持用于生产应用](https://learn.microsoft.com/en-us/graph/api/driveitem-get-contentstream?view=graph-rest-beta)。标准读取仍为默认值，不静默切换到 beta。
 
-验证后已删除本任务解码生成的私有授权文件，避免进入环境发布快照；后续使用时由保存的变量重新恢复。当前没有需要更新到保管库的续期配置。
+代码和当前任务安装已验证；将新版安装、启动片段保存到环境草稿、重新发布并在新任务验收，仍需按第 4、7 节完成。运行时授权位于仓库外、权限 0600；本次有正常续期，个人保管库需由用户在界面更新，不能自动回写。
 
 ## 1. Mac 上完成一次授权
 
@@ -60,54 +60,76 @@ rclone config show dota_onedrive | base64 | tr -d '\n' | pbcopy
 
 这是程序必须读取的完整配置，不能选网络机密类型；网络机密只给程序占位符。**环境本身还必须请求同名个人变量**，只保存 Vault 值不会自动注入任务。[官方配置说明](https://learn.chatgpt.com/docs/environments/cloud-environments#supply-personal-values)
 
-## 4. 固化可复用环境
+## 4. 更新可复用环境
 
-当前普通任务只提供环境状态查询，没有保存环境编辑草稿、重新发布或修改个人保管库的工具。到 **Settings → Codex Cloud → Environments → 当前环境 → Edit**，在环境设置对话中粘贴：
+普通任务没有环境草稿保存、发布或保管库写入工具。当前任务文件已更新，不等于已保存环境草稿。到 **Settings → Codex Cloud → Environments → 当前环境 → Edit**，在设置对话中粘贴：
 
-> 修复已经确认的 OneDrive 工具固化：保留现有仓库、网络设置、已能自动注入的 ONEDRIVE_RCLONE_CONFIG_B64 变量及其个人保管库绑定。读取 fenghanyue/DOTA2_hero_selector 的固定提交 dfba08df62b12ecf292dae0e07e94c55d315bc61，将 cloud/onedrive-install.sh 追加到当前环境安装脚本，将 cloud/onedrive-start.md 追加到 Start skill，已有相同段落时避免重复。保留原有 Android/Java 和项目启动职责。将这两个字段保存到可重新发布的环境配置草稿，不能只修改当前任务的同名文件。允许安装固定版本工具并核对来源、校验和及脚本语法；不要恢复个人授权或进行账户操作。展示实际配置字段、追加差异、检查结果和草稿保存状态，供我重新发布。若缺少保存工具，明确报告未保存。
+> 更新已确认的 OneDrive 临时存取方案。读取 fenghanyue/DOTA2_hero_selector 固定提交 7c4546a61b82c7fcd42fb8ddf1ad05b90769ff55 中的 cloud/onedrive-install.sh 和 cloud/onedrive-start.md。用新片段替换 install_script、start_skill 中已有的 OneDrive 追加段，避免重复；安装脚本中如有本地 start.md 镜像生成逻辑，也同步更新镜像。保留其余规则同步、Android/Java、仓库、网络及 ONEDRIVE_RCLONE_CONFIG_B64 的个人绑定和 optional 设置。允许运行安装片段，核对来源、SHA-256、Bash 语法，以及帮助中的 upload、verify、restore 和 --read-method graph-contentstream。准备阶段不恢复授权、不操作 OneDrive 账户。将字段保存到可重新发布的环境配置草稿，回读确认已保存，展示实际字段差异和检查结果，供我点击 Republish。不能只修改当前任务文件；缺少保存工具时明确报告未保存。
 
 两个追加段的固定来源与 SHA-256：
 
 | 追加到 | 固定来源 | SHA-256 |
 |---|---|---|
-| 安装脚本 | [cloud/onedrive-install.sh](https://github.com/fenghanyue/DOTA2_hero_selector/blob/dfba08df62b12ecf292dae0e07e94c55d315bc61/cloud/onedrive-install.sh) | `6b000f09c0d99b67b32e0fea323d6610537753336cf153a333a3e619f64e001e` |
-| Start skill | [cloud/onedrive-start.md](https://github.com/fenghanyue/DOTA2_hero_selector/blob/dfba08df62b12ecf292dae0e07e94c55d315bc61/cloud/onedrive-start.md) | `57baad9cd23fac9fca79dd1d32a0b200eb3ba1e93f9508cc529511e07896c756` |
+| 安装脚本 | [cloud/onedrive-install.sh](https://github.com/fenghanyue/DOTA2_hero_selector/blob/7c4546a61b82c7fcd42fb8ddf1ad05b90769ff55/cloud/onedrive-install.sh) | `6eacf4e42e0310e5e4d77ec9c9675dc0fc53de3e92bb860168ae752a234a2675` |
+| Start skill | [cloud/onedrive-start.md](https://github.com/fenghanyue/DOTA2_hero_selector/blob/7c4546a61b82c7fcd42fb8ddf1ad05b90769ff55/cloud/onedrive-start.md) | `2fd9251f9d965e852f7ed4cc9a6e4bc8f8c6df30901537d71258526e03931885` |
 
-安装段从固定 GitHub 提交下载两个程序并核对 SHA-256，独立保存到 `/workspace/.cloud-environment/onedrive-tools/`，不依赖新任务一定检出功能分支。不会覆盖原 Android/Java 配置。原任务可供比对的差异是安装脚本末尾新增 37 行、启动说明末尾新增 11 行；这些临时文件本身不能证明环境草稿已经保存。
+安装段将程序固定到提交 `8fc440417014c3a249ad5186a0c3f5b826c571ab`，`onedrive_backup.py` 的 SHA-256 为 `3bbb9dc61f8e1e25cc2432514be128265ebc833940760a3bde09e130c0367408`。两个程序独立保存在 `/workspace/.cloud-environment/onedrive-tools/`，来源记在 `sources.json`；即使项目仍检出尚未包含脚本的 `main`，已发布工具也可使用。安装片段对子进程移除授权变量，不解码授权。
 
-确认环境草稿保存了两个字段、工具准备完成，再审阅并 **Republish**。只提升变量设置或只在普通任务补装工具，都不算这一步完成。发布后新开任务，选择这个环境，按第 5 节先验收工具再恢复授权；当前旧任务不会因为重新发布而自动变成新版环境。[官方环境复用说明](https://learn.chatgpt.com/docs/environments/cloud-environments#reuse-and-update-saved-state)
+确认实际草稿字段保存、工具准备完成后，再审阅并 **Republish**。发布后用该环境新开任务按第 7 节验收；现有任务保留自己的文件状态。[官方环境复用说明](https://learn.chatgpt.com/docs/environments/cloud-environments#reuse-and-update-saved-state)
 
-## 5. 云端恢复、备份及验收
+## 5. 云端保存、校验和取回
 
-在新版环境的新任务，先检查恢复出的安装脚本、启动说明是否含追加段，并核对 `/workspace/.cloud-environment/onedrive-tools/sources.json` 记录的来源和程序哈希。以下工具必须在任何临时补装之前就已存在：
+先检查工具，不临时补装掩盖恢复失败：
 
 ```bash
 test -f /workspace/.cloud-environment/onedrive-tools/install_rclone.py
 test -f /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py
 test -f /workspace/.cloud-environment/onedrive-tools/sources.json
 "$HOME/.local/share/dota2-hero-selector/bin/rclone" version
+python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py --help
 ```
 
-固定路径的版本应为 1.76.0，不能用系统已有的 1.60.1 代替。任一缺失时，先记录工具固化未通过；随后即使临时安装并连接成功，也保留该失败结论。工具恢复通过后，再运行：
+固定 rclone 应为 1.76.0，脚本应有 `upload`、`verify`、`restore`。核对来源与第 4 节一致后恢复授权：
 
 ```bash
 python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py bootstrap
 python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py status
 ```
 
-`status` 只返回连接是否成功、容量数值和是否需要更新保管库，不输出令牌、盘内文件或配置。确认剩余空间后，使用本批现有归档和训练目录：
+`status` 只报告连接、容量和是否需要更新保管库。已有归档和训练目录时，上传并逐文件回读校验；下例为现有批次，新采集时替换输入路径和批次名：
 
 ```bash
 python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py upload \
   --archive data/backups/20261112/ranked-official-20261112-1000.tar.zst \
   --training samples/opendota/ranked-official-20261112-1000 \
   --batch ranked-official-20261112-1000 \
-  --report data/backups/20261112/onedrive-verification.json
+  --report data/backups/20261112/onedrive-latest-upload.json \
+  --read-method graph-contentstream
 ```
 
-新任务若没有这些本地数据，先从[已有 GitHub 原始备份](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)按 README 恢复归档，把合并的 `.tar.zst` 放到命令中的 `data/backups/20261112/`。训练目录在数据分支，先执行 `git fetch origin data/opendota-official-20261112`，再用 `git archive FETCH_HEAD samples/opendota/ranked-official-20261112-1000 | tar -x` 恢复，不切换现有分支。
+同批次已有完整且相同的备份时，`upload` 只重新校验并报告 `already_complete=true`，不会重写完成清单。内容不同则拒绝覆盖，要求新批次。只读验证远端整个批次：
 
-目的地固定在 `DOTA2_hero_selector/opendota/<batch>/`。程序只上传原始 `.tar.zst` 和白名单内的训练文件/报告，使用不可变文件检查；同批次内容变化时使用新的批次名。每个上传文件都下载并计算 SHA-256，全部通过后才写远端 `manifest.json` 及本地验证报告。没有设定无人值守采集计划。
+```bash
+python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py verify \
+  --batch ranked-official-20261112-1000 \
+  --report data/backups/20261112/onedrive-latest-verify.json \
+  --read-method graph-contentstream
+```
+
+新任务没有任何本地数据时，可直接从 OneDrive 下载到一个尚不存在的目录：
+
+```bash
+python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py restore \
+  --batch ranked-official-20261112-1000 \
+  --output data/restored/ranked-official-20261112-1000 \
+  --read-method graph-contentstream
+```
+
+结果包含 `raw/*.tar.zst`、`training/`、`manifest.json` 和 `restore-report.json`。原始压缩包不自动解压；训练数据可直接从 `training/matches.jsonl` 使用。恢复中途失败时临时目录被清理，目标目录不会留下不完整结果；已有目标不覆盖，应换新的输出路径。
+
+目的地固定在 `DOTA2_hero_selector/opendota/<batch>/`。只上传原始归档和训练白名单文件，文件使用不可变检查、完成清单最后上传。临时上传模式单文件超过 200 MiB 时会在网络操作前停止，应拆小采集批次；不自动改用失败的上传会话。Graph GET 对部分暂时错误最多尝试三次，401/403 不反复重试；长时间限流会要求稍后重试。失败时不生成成功报告。
+
+采集、导出、打包、上传、恢复均在云任务中执行。采集脚本不会自动上传，也没有无人值守或定时计划。原始采集目录需先打包为 `.tar.zst`，按实际目录使用已有 `tar`、`zstd`。OneDrive 不可用时，最初批次仍有[GitHub 原始归档](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)可按其 README 恢复。
 
 ## 6. 授权续期
 
@@ -119,4 +141,8 @@ python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py export-v
 
 该命令只写出仓库外的 `~/.config/dota2-hero-selector/personal-vault-value.txt`（权限 0600），不回显内容。用户在安全的文件界面复制其内容，更新 Vault 的同名值；不能把它传到聊天里。授权过期、撤销或需要新登录时，在 Mac 重新授权并重复第 2～3 步。[微软刷新令牌说明](https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens)
 
-验收要分别记录：程序测试、微软实际授权、真实上传及回读、新环境重建恢复。仅有配置文件或已发布环境，都不能替代实际账户验证。
+## 7. 重新发布后的新任务验收
+
+选择重新发布的环境新开任务，先核对第 4 节的来源、哈希和第 5 节的命令帮助；工具须未经补装就存在。随后恢复授权，用 `verify` 读取现有批次，再用 `restore` 下载到新目录，检查实际文件和报告。需要验证新任务上传时，可从已恢复的数据生成独立验收批次，再执行 `upload → verify → restore`，不采集新比赛、不覆盖原批次。
+
+分别记录代码测试、当前任务真实存取、环境草稿已保存、环境已重新发布、新任务实测结果。当前的 50 项离线测试与真实存取通过，不能替代本次新版工具重新发布后的新任务验收。原 401 根因仍未确定；临时 beta 方案的长期兼容性未获保证。

@@ -46,7 +46,7 @@
 
 ## 保存与恢复
 
-- 个人 OneDrive 已实际备份：`DOTA2_hero_selector/opendota/ranked-official-20261112-1000/`，原始归档与训练集等 11 个文件均已下载核对 SHA-256。[传输验证报告](../samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)。用户在新任务验收确认授权自动注入、格式有效且可恢复；原环境只有 rclone 1.60.1，专用脚本及固定的 rclone 1.76.0 缺失，临时补装后连接和既有备份抽查通过，剩余约 579.18 GB。安装与启动追加段未进入已发布环境，工具固化验收未通过，需保存配置并重新发布后复验。
+- 个人 OneDrive 已实际备份：`DOTA2_hero_selector/opendota/ranked-official-20261112-1000/`，原始归档与训练集等 11 个文件均已下载核对 SHA-256。[原传输报告](../samples/opendota/ranked-official-20261112-1000/onedrive-verification.json)。用户新任务随后确认工具与授权可自动恢复。2026-11-13 补齐临时 Graph beta 读取、独立校验与下载恢复命令，在 `storage-e2e-20261113T054634Z-singlepart` 真实完成上传、回读、恢复和同批次重复执行，均为 11 文件、31,669,996 字节且哈希一致；恢复落盘也复核通过。[完整存取实测](../samples/opendota/ranked-official-20261112-1000/onedrive-storage-e2e-20261113.json)。测试副本不新增比赛，合格数据仍为 830 场。临时上传单文件上限 200 MiB，新版工具重新发布及新任务验收待完成，原 401 根因未确定。
 - 代码、训练集和报告分支：`data/opendota-official-20261112`，供审阅后合并；未合并到 `main`。
 - [830 场最小数据](../samples/opendota/ranked-official-20261112-1000/matches.jsonl)、[来源清单](../samples/opendota/ranked-official-20261112-1000/provenance.json)、[导出报告](../samples/opendota/ranked-official-20261112-1000/report.json)、[独立审计](../samples/opendota/ranked-official-20261112-1000/audit.json)。
 - [完整原始备份](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)：独立分支 `data/opendota-backup-20261112`，两段共 31,221,754 字节，含 SQLite、完整原始响应、失败请求、CSV/JSONL、运行及测试日志。该目录 README 提供恢复步骤；本次已实际解压复核。
