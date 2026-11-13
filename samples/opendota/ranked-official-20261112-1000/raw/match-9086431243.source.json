@@ -1,0 +1,13 @@
+{
+  "request_id": 28,
+  "url": "https://api.opendota.com/api/matches/9086431243?meta=1",
+  "raw_path": "raw/http/000028-detail-9086431243.json.gz",
+  "sha256": "eb9b8b2abd60bb66ff213c60d2651172312a693d9061c5fab01e08f2577ac5ce",
+  "headers": {
+    "date": "Thu, 12 Nov 2026 03:19:43 GMT",
+    "content-type": "application/json; charset=utf-8",
+    "x-rate-limit-remaining-minute": "44",
+    "x-rate-limit-remaining-day": "2970"
+  },
+  "elapsed_seconds": 11.70726410300017
+}

@@ -1,0 +1,64 @@
+{
+  "created_at": "2026-11-12T09:50:59.574186+00:00",
+  "passed": true,
+  "destination": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261112-1000",
+  "files": [
+    {
+      "path": "raw/ranked-official-20261112-1000.tar.zst",
+      "bytes": 31221754,
+      "sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5"
+    },
+    {
+      "path": "training/matches.jsonl",
+      "bytes": 221074,
+      "sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988"
+    },
+    {
+      "path": "training/provenance.json",
+      "bytes": 213079,
+      "sha256": "6498afd69e88a2b5d5437241e91bda195cb208238a963a4d24184f1b6019caeb"
+    },
+    {
+      "path": "training/report.json",
+      "bytes": 3094,
+      "sha256": "c5bb96b3fe3e6843283b3e7bf9975d02eb97a1d5657091f2cc51e28a1de0eb58"
+    },
+    {
+      "path": "training/collection-report.json",
+      "bytes": 3523,
+      "sha256": "4911c7a1be840fef5aa94026902c20d65e16ba446642ff325739798a184ddddb"
+    },
+    {
+      "path": "training/collection-summary.json",
+      "bytes": 1099,
+      "sha256": "3b52ffc8264c3df8e61e47f2660d334687cd78b3b36918fde0e360de61b4367f"
+    },
+    {
+      "path": "training/audit.json",
+      "bytes": 735,
+      "sha256": "a5adc81b91ea27de5f489b751aac70e57aaeaeb6402cacffa703769641a173a5"
+    },
+    {
+      "path": "training/test-report.json",
+      "bytes": 409,
+      "sha256": "53314c7b7570d4b30edfd41c124778b4f941c45ec62ebf823240b8ca48cdae51"
+    },
+    {
+      "path": "training/backup.json",
+      "bytes": 1153,
+      "sha256": "95c0121843fe10a28f8c7c0479fc5fdb2db190e9b2c530c4e24e23c4abfdf579"
+    },
+    {
+      "path": "training/restore-verification.json",
+      "bytes": 939,
+      "sha256": "6628a93fd295474326e278266784a49b9ab51fb6c9b65361b76453d789241862"
+    },
+    {
+      "path": "training/README.md",
+      "bytes": 3137,
+      "sha256": "8d60717aa2a59f6ff4a0b2b46f8d74c6e7753e464e44c303a2205c18def8b41a"
+    }
+  ],
+  "verification": "downloaded all files and checked SHA-256",
+  "vault_update_required": false
+}

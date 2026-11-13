@@ -1,0 +1,65 @@
+{
+  "reported_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "passed": true,
+  "scope": "User-approved temporary OneDrive workflow after environment republish",
+  "evidence_source": {
+    "type": "user_provided_summary_of_a_separate_fresh_task",
+    "original_report_files_accessible_in_this_task": false,
+    "original_reports_copied_or_independently_reexecuted_here": false,
+    "reported_task_directory": "/workspace/DOTA2_hero_selector/data/onedrive-published-check-20261113T150707186870+0800",
+    "reported_summary_file": "acceptance-report.txt",
+    "note": "Report paths refer to the separate task. This record preserves the user's acceptance summary, not copies of its raw artifacts."
+  },
+  "tool": {
+    "expected_code_revision": "8fc440417014c3a249ad5186a0c3f5b826c571ab",
+    "expected_script_sha256": "3bbb9dc61f8e1e25cc2432514be128265ebc833940760a3bde09e130c0367408",
+    "reported_source_and_sha256_match": true,
+    "rclone_version": "1.76.0"
+  },
+  "checks": {
+    "automatic_tool_restore": {
+      "passed": true,
+      "report": "reports/01-tool-automatic-restore.json"
+    },
+    "automatic_authorization_restore": {
+      "passed": true,
+      "directory_mode": "0700",
+      "configuration_mode": "0600",
+      "vault_update_required": true,
+      "free_bytes_at_status": 579176339865,
+      "report": "reports/02-authorization.json"
+    },
+    "existing_backup_verify_and_restore": {
+      "passed": true,
+      "data_files": 11,
+      "data_bytes": 31669996,
+      "manifest_sha256": "317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73",
+      "restored_disk_sizes_and_hashes_match": true,
+      "report": "reports/04-existing-restore-local-integrity.json"
+    },
+    "new_batch_upload_and_verify": {
+      "passed": true,
+      "data_files": 11,
+      "report": "reports/06-new-verify.json"
+    },
+    "new_batch_restore": {
+      "passed": true,
+      "data_files": 11,
+      "metadata_files": 2,
+      "all_13_file_sizes_and_sha256_checked": true,
+      "report": "reports/08-all-restored-files-integrity.json"
+    }
+  },
+  "source_batch": "ranked-official-20261112-1000",
+  "published_check_batch": "published-check-20261113T151026180709",
+  "new_matches_collected": 0,
+  "unique_qualified_matches_remain": 830,
+  "repository_commit_unchanged_and_worktree_clean_reported": true,
+  "source_program_environment_and_network_changes_in_acceptance_task": false,
+  "read_method": "graph-contentstream",
+  "experimental_beta": true,
+  "single_file_upload_limit_bytes": 209715200,
+  "original_401_root_cause_resolved": false,
+  "microsoft_production_support_for_beta_claimed": false
+}

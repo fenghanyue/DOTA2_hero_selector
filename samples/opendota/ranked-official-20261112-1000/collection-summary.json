@@ -1,0 +1,39 @@
+{
+  "collection_started_at": "2026-11-12T03:18:25.760006+00:00",
+  "collection_finished_at": "2026-11-12T04:05:19.664426+00:00",
+  "collection_wall_seconds_including_cooldown": 2813.90442,
+  "runs": 2,
+  "requested_rpm_by_run": [
+    50,
+    40
+  ],
+  "request_budget": 1500,
+  "actual_requests": 1084,
+  "requested_ids": 1000,
+  "successful_details": 969,
+  "failed_ids": 31,
+  "official_roles_complete": 881,
+  "official_role_invalid_matches": 59,
+  "invalid_role_flag_value_counts": {
+    "0": 590
+  },
+  "missing_metadata_matches": 29,
+  "leaver_rejected_after_complete_roles": 51,
+  "accepted_matches": 830,
+  "accepted_fraction_of_attempted_ids": 0.83,
+  "accepted_unparsed": 825,
+  "radiant_win_counts": {
+    "false": 368,
+    "true": 462
+  },
+  "accepted_start_time_range_utc": [
+    "2026-11-12T02:35:42+00:00",
+    "2026-11-12T02:48:32+00:00"
+  ],
+  "accepted_start_time_span_seconds": 770,
+  "intersection_with_legacy_examples": [],
+  "dataset_sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988",
+  "network_errors": {
+    "The read operation timed out": 5
+  }
+}

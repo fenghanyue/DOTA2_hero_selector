@@ -1,0 +1,165 @@
+{
+  "created_at": "2026-11-12T04:05:33.803285+00:00",
+  "source_directory": "ranked-official-20261112-1000",
+  "position_source": "valve_metadata_lane_selection_flags",
+  "patch": 60,
+  "min_duration_seconds": 720,
+  "successful_details": 969,
+  "accepted_matches": 830,
+  "rejected_matches": 139,
+  "rejection_reason_counts_overlap": {
+    "official_role_not_single": 59,
+    "leaver_status_not_0_or_1": 55,
+    "metadata_missing": 29
+  },
+  "integrity_errors": [],
+  "failed_detail_ids": [
+    {
+      "match_id": 9086437517,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086434887,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086433542,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086431980,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086431416,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086430753,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086430180,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086429438,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086428056,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086428024,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427910,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427897,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427860,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427852,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427533,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427142,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427139,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086427076,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086426602,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086426540,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086426270,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425884,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425570,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425388,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425173,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086425003,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424900,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424860,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424683,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424451,
+      "error": "HTTP 500"
+    },
+    {
+      "match_id": 9086424449,
+      "error": "HTTP 500"
+    }
+  ],
+  "dataset_sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988",
+  "start_time_range": [
+    1794450942,
+    1794451712
+  ],
+  "rank_band_counts": {
+    "传奇": 261,
+    "超凡入圣": 72,
+    "万古流芳": 131,
+    "中军": 109,
+    "卫士": 63,
+    "统帅": 141,
+    "冠绝一世": 42,
+    "先锋": 11
+  },
+  "rank_known_players_counts": {
+    "9": 153,
+    "10": 580,
+    "8": 61,
+    "7": 21,
+    "6": 8,
+    "5": 7
+  }
+}

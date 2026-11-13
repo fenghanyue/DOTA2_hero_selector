@@ -1,0 +1,294 @@
+{
+  "created_at": "2026-11-13T14:10:53.594265+08:00",
+  "passed": true,
+  "purpose": "Storage integration test using a byte-identical copy of the existing 830-match batch; no new matches collected.",
+  "source_batch": "ranked-official-20261112-1000",
+  "test_batch": "storage-e2e-20261113T054634Z-singlepart",
+  "files_verified_per_phase": 11,
+  "data_bytes_per_phase": 31669996,
+  "read_method": "graph-contentstream",
+  "experimental_beta": true,
+  "single_file_upload_limit_bytes": 209715200,
+  "code_revision": "8fc440417014c3a249ad5186a0c3f5b826c571ab",
+  "offline_tests": {
+    "command": "python3 -B -m unittest discover -s tests -v",
+    "passed": true,
+    "tests": 50
+  },
+  "manifest_sha256": "5c3403726390d287cf87c5302f697477f6ba35e0a7f540e3df948571cca48c67",
+  "restored_disk_files_checked": true,
+  "phases": {
+    "upload": {
+      "created_at": "2026-11-13T06:00:25.043847+00:00",
+      "passed": true,
+      "destination": "dota_onedrive:DOTA2_hero_selector/opendota/storage-e2e-20261113T054634Z-singlepart",
+      "files": [
+        {
+          "path": "raw/ranked-official-20261112-1000.tar.zst",
+          "bytes": 31221754,
+          "sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5"
+        },
+        {
+          "path": "training/matches.jsonl",
+          "bytes": 221074,
+          "sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988"
+        },
+        {
+          "path": "training/provenance.json",
+          "bytes": 213079,
+          "sha256": "6498afd69e88a2b5d5437241e91bda195cb208238a963a4d24184f1b6019caeb"
+        },
+        {
+          "path": "training/report.json",
+          "bytes": 3094,
+          "sha256": "c5bb96b3fe3e6843283b3e7bf9975d02eb97a1d5657091f2cc51e28a1de0eb58"
+        },
+        {
+          "path": "training/collection-report.json",
+          "bytes": 3523,
+          "sha256": "4911c7a1be840fef5aa94026902c20d65e16ba446642ff325739798a184ddddb"
+        },
+        {
+          "path": "training/collection-summary.json",
+          "bytes": 1099,
+          "sha256": "3b52ffc8264c3df8e61e47f2660d334687cd78b3b36918fde0e360de61b4367f"
+        },
+        {
+          "path": "training/audit.json",
+          "bytes": 735,
+          "sha256": "a5adc81b91ea27de5f489b751aac70e57aaeaeb6402cacffa703769641a173a5"
+        },
+        {
+          "path": "training/test-report.json",
+          "bytes": 409,
+          "sha256": "53314c7b7570d4b30edfd41c124778b4f941c45ec62ebf823240b8ca48cdae51"
+        },
+        {
+          "path": "training/backup.json",
+          "bytes": 1153,
+          "sha256": "95c0121843fe10a28f8c7c0479fc5fdb2db190e9b2c530c4e24e23c4abfdf579"
+        },
+        {
+          "path": "training/restore-verification.json",
+          "bytes": 939,
+          "sha256": "6628a93fd295474326e278266784a49b9ab51fb6c9b65361b76453d789241862"
+        },
+        {
+          "path": "training/README.md",
+          "bytes": 3137,
+          "sha256": "8d60717aa2a59f6ff4a0b2b46f8d74c6e7753e464e44c303a2205c18def8b41a"
+        }
+      ],
+      "verification": "downloaded all files and checked SHA-256",
+      "read_method": "graph-contentstream",
+      "experimental_beta": true,
+      "vault_update_required": true
+    },
+    "verify": {
+      "created_at": "2026-11-13T06:02:59.450194+00:00",
+      "passed": true,
+      "operation": "verify",
+      "destination": "dota_onedrive:DOTA2_hero_selector/opendota/storage-e2e-20261113T054634Z-singlepart",
+      "files": [
+        {
+          "path": "raw/ranked-official-20261112-1000.tar.zst",
+          "bytes": 31221754,
+          "sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5"
+        },
+        {
+          "path": "training/matches.jsonl",
+          "bytes": 221074,
+          "sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988"
+        },
+        {
+          "path": "training/provenance.json",
+          "bytes": 213079,
+          "sha256": "6498afd69e88a2b5d5437241e91bda195cb208238a963a4d24184f1b6019caeb"
+        },
+        {
+          "path": "training/report.json",
+          "bytes": 3094,
+          "sha256": "c5bb96b3fe3e6843283b3e7bf9975d02eb97a1d5657091f2cc51e28a1de0eb58"
+        },
+        {
+          "path": "training/collection-report.json",
+          "bytes": 3523,
+          "sha256": "4911c7a1be840fef5aa94026902c20d65e16ba446642ff325739798a184ddddb"
+        },
+        {
+          "path": "training/collection-summary.json",
+          "bytes": 1099,
+          "sha256": "3b52ffc8264c3df8e61e47f2660d334687cd78b3b36918fde0e360de61b4367f"
+        },
+        {
+          "path": "training/audit.json",
+          "bytes": 735,
+          "sha256": "a5adc81b91ea27de5f489b751aac70e57aaeaeb6402cacffa703769641a173a5"
+        },
+        {
+          "path": "training/test-report.json",
+          "bytes": 409,
+          "sha256": "53314c7b7570d4b30edfd41c124778b4f941c45ec62ebf823240b8ca48cdae51"
+        },
+        {
+          "path": "training/backup.json",
+          "bytes": 1153,
+          "sha256": "95c0121843fe10a28f8c7c0479fc5fdb2db190e9b2c530c4e24e23c4abfdf579"
+        },
+        {
+          "path": "training/restore-verification.json",
+          "bytes": 939,
+          "sha256": "6628a93fd295474326e278266784a49b9ab51fb6c9b65361b76453d789241862"
+        },
+        {
+          "path": "training/README.md",
+          "bytes": 3137,
+          "sha256": "8d60717aa2a59f6ff4a0b2b46f8d74c6e7753e464e44c303a2205c18def8b41a"
+        }
+      ],
+      "manifest_sha256": "5c3403726390d287cf87c5302f697477f6ba35e0a7f540e3df948571cca48c67",
+      "read_method": "graph-contentstream",
+      "experimental_beta": true,
+      "vault_update_required": true
+    },
+    "restore": {
+      "created_at": "2026-11-13T06:03:26.725154+00:00",
+      "passed": true,
+      "operation": "restore",
+      "destination": "dota_onedrive:DOTA2_hero_selector/opendota/storage-e2e-20261113T054634Z-singlepart",
+      "files": [
+        {
+          "path": "raw/ranked-official-20261112-1000.tar.zst",
+          "bytes": 31221754,
+          "sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5"
+        },
+        {
+          "path": "training/matches.jsonl",
+          "bytes": 221074,
+          "sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988"
+        },
+        {
+          "path": "training/provenance.json",
+          "bytes": 213079,
+          "sha256": "6498afd69e88a2b5d5437241e91bda195cb208238a963a4d24184f1b6019caeb"
+        },
+        {
+          "path": "training/report.json",
+          "bytes": 3094,
+          "sha256": "c5bb96b3fe3e6843283b3e7bf9975d02eb97a1d5657091f2cc51e28a1de0eb58"
+        },
+        {
+          "path": "training/collection-report.json",
+          "bytes": 3523,
+          "sha256": "4911c7a1be840fef5aa94026902c20d65e16ba446642ff325739798a184ddddb"
+        },
+        {
+          "path": "training/collection-summary.json",
+          "bytes": 1099,
+          "sha256": "3b52ffc8264c3df8e61e47f2660d334687cd78b3b36918fde0e360de61b4367f"
+        },
+        {
+          "path": "training/audit.json",
+          "bytes": 735,
+          "sha256": "a5adc81b91ea27de5f489b751aac70e57aaeaeb6402cacffa703769641a173a5"
+        },
+        {
+          "path": "training/test-report.json",
+          "bytes": 409,
+          "sha256": "53314c7b7570d4b30edfd41c124778b4f941c45ec62ebf823240b8ca48cdae51"
+        },
+        {
+          "path": "training/backup.json",
+          "bytes": 1153,
+          "sha256": "95c0121843fe10a28f8c7c0479fc5fdb2db190e9b2c530c4e24e23c4abfdf579"
+        },
+        {
+          "path": "training/restore-verification.json",
+          "bytes": 939,
+          "sha256": "6628a93fd295474326e278266784a49b9ab51fb6c9b65361b76453d789241862"
+        },
+        {
+          "path": "training/README.md",
+          "bytes": 3137,
+          "sha256": "8d60717aa2a59f6ff4a0b2b46f8d74c6e7753e464e44c303a2205c18def8b41a"
+        }
+      ],
+      "manifest_sha256": "5c3403726390d287cf87c5302f697477f6ba35e0a7f540e3df948571cca48c67",
+      "read_method": "graph-contentstream",
+      "experimental_beta": true,
+      "vault_update_required": true,
+      "restored_to": "/workspace/DOTA2_hero_selector/data/onedrive-restored/storage-e2e-20261113T054634Z-singlepart"
+    },
+    "repeat_upload": {
+      "created_at": "2026-11-13T06:07:02.113804+00:00",
+      "passed": true,
+      "operation": "verify",
+      "destination": "dota_onedrive:DOTA2_hero_selector/opendota/storage-e2e-20261113T054634Z-singlepart",
+      "files": [
+        {
+          "path": "raw/ranked-official-20261112-1000.tar.zst",
+          "bytes": 31221754,
+          "sha256": "bd472af4f8ca69821a6c29fc3268fc733beec8c169cd805a78b6ea0a97441bb5"
+        },
+        {
+          "path": "training/matches.jsonl",
+          "bytes": 221074,
+          "sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988"
+        },
+        {
+          "path": "training/provenance.json",
+          "bytes": 213079,
+          "sha256": "6498afd69e88a2b5d5437241e91bda195cb208238a963a4d24184f1b6019caeb"
+        },
+        {
+          "path": "training/report.json",
+          "bytes": 3094,
+          "sha256": "c5bb96b3fe3e6843283b3e7bf9975d02eb97a1d5657091f2cc51e28a1de0eb58"
+        },
+        {
+          "path": "training/collection-report.json",
+          "bytes": 3523,
+          "sha256": "4911c7a1be840fef5aa94026902c20d65e16ba446642ff325739798a184ddddb"
+        },
+        {
+          "path": "training/collection-summary.json",
+          "bytes": 1099,
+          "sha256": "3b52ffc8264c3df8e61e47f2660d334687cd78b3b36918fde0e360de61b4367f"
+        },
+        {
+          "path": "training/audit.json",
+          "bytes": 735,
+          "sha256": "a5adc81b91ea27de5f489b751aac70e57aaeaeb6402cacffa703769641a173a5"
+        },
+        {
+          "path": "training/test-report.json",
+          "bytes": 409,
+          "sha256": "53314c7b7570d4b30edfd41c124778b4f941c45ec62ebf823240b8ca48cdae51"
+        },
+        {
+          "path": "training/backup.json",
+          "bytes": 1153,
+          "sha256": "95c0121843fe10a28f8c7c0479fc5fdb2db190e9b2c530c4e24e23c4abfdf579"
+        },
+        {
+          "path": "training/restore-verification.json",
+          "bytes": 939,
+          "sha256": "6628a93fd295474326e278266784a49b9ab51fb6c9b65361b76453d789241862"
+        },
+        {
+          "path": "training/README.md",
+          "bytes": 3137,
+          "sha256": "8d60717aa2a59f6ff4a0b2b46f8d74c6e7753e464e44c303a2205c18def8b41a"
+        }
+      ],
+      "manifest_sha256": "5c3403726390d287cf87c5302f697477f6ba35e0a7f540e3df948571cca48c67",
+      "read_method": "graph-contentstream",
+      "experimental_beta": true,
+      "vault_update_required": true,
+      "already_complete": true
+    }
+  },
+  "new_environment_republish_verified": true,
+  "new_environment_republish_verification_source": "user_provided_summary_of_a_separate_fresh_task",
+  "new_environment_republish_verification_record": "onedrive-published-acceptance-20261113.json"
+}
