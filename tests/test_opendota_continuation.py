@@ -4,6 +4,7 @@ import datetime as dt
 import hashlib
 import json
 import pathlib
+import sqlite3
 import sys
 import tempfile
 import unittest
@@ -85,6 +86,23 @@ class ContinuationTests(unittest.TestCase):
             continuation.collect(pathlib.Path(directory), {1: row()})
             self.assertEqual(collector.call_args.args[0].detail_limit, 2)
             self.assertEqual(collector.call_args.args[0].request_limit, 675)
+
+    def test_interrupted_request_stays_charged_without_fabricating_a_response(self):
+        with tempfile.TemporaryDirectory() as directory:
+            args = argparse.Namespace(output=directory, source='ranked', detail_limit=600, rpm=40,
+                                      daily_budget=675, daily_reserve=300, request_limit=675,
+                                      min_duration=720, min_age_hours=2, max_age_days=7, max_list_pages=6)
+            collector = continuation.DeduplicatingCollector(args, {})
+            collector.db.execute('INSERT INTO requests(started_at,kind,match_id,url) VALUES (?,?,?,?)',
+                                 ('2026-11-13T09:00:00+00:00', 'detail', 1, 'https://api.opendota.com/api/matches/1?meta=1'))
+            collector.db.commit()
+            collector.db.close()
+            collector.lock.close()
+            with patch.object(continuation.DeduplicatingCollector, 'run'):
+                continuation.collect(pathlib.Path(directory), {})
+            with sqlite3.connect(pathlib.Path(directory) / 'state.sqlite3') as db:
+                records = db.execute('SELECT status,error FROM requests').fetchall()
+            self.assertEqual(records, [(None, 'interrupted_before_response_recorded')])
 
     def test_stopped_partial_slot_is_sealed_instead_of_spending_another_budget(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(continuation, 'DeduplicatingCollector') as collector:

@@ -185,6 +185,11 @@ def collect(source, known_ids):
                               min_age_hours=2, max_age_days=7, max_list_pages=6)
     collector = DeduplicatingCollector(args, known_ids)
     try:
+        # A killed worker may have logged a request before its response arrived.
+        # Keep that request charged; do not invent a response or a successful row.
+        collector.db.execute('UPDATE requests SET error=? WHERE status IS NULL AND error IS NULL',
+                             ('interrupted_before_response_recorded',))
+        collector.db.commit()
         collector.run()
     finally:
         collector.db.close()
