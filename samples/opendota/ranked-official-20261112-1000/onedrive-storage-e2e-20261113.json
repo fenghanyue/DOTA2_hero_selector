@@ -288,5 +288,7 @@
       "already_complete": true
     }
   },
-  "new_environment_republish_verified": false
+  "new_environment_republish_verified": true,
+  "new_environment_republish_verification_source": "user_provided_summary_of_a_separate_fresh_task",
+  "new_environment_republish_verification_record": "onedrive-published-acceptance-20261113.json"
 }
