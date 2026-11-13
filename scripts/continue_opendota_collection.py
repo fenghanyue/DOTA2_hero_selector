@@ -116,6 +116,11 @@ def inventory(backup, config, cache):
         manifest, payload, manifest_sha = loaded
         if batch == ORIGINAL and manifest_sha != ORIGINAL_MANIFEST_SHA:
             raise ContinuationError('Original completion manifest SHA-256 differs.')
+        # Upload publishes its manifest before the caller's independent verification.
+        # Recheck every remote file, including raw archives, before trusting a count or slot.
+        verified = backup.verify_batch(config, batch, read_method=READ_METHOD)
+        if verified.get('passed') is not True or verified.get('manifest_sha256') != manifest_sha:
+            raise ContinuationError(f'Independent verification failed or completion manifest changed: {batch}')
         dataset = checked_artifact(backup, config, batch, manifest, 'matches.jsonl', cache)
         report = json.loads(checked_artifact(backup, config, batch, manifest, 'report.json', cache))
         audited = json.loads(checked_artifact(backup, config, batch, manifest, 'audit.json', cache))
