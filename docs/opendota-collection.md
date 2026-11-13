@@ -94,3 +94,30 @@ python -m unittest discover -s tests -v
 - [Valve 元数据结构](https://github.com/SteamTracking/GameTracking-Dota2/blob/master/Protobufs/dota_match_metadata.proto)，`CDOTAMatchMetadataFile.match_id`、`Team.Player.lane_selection_flags`。
 - [Valve 职责位标记枚举](https://github.com/SteamTracking/GameTracking-Dota2/blob/master/Protobufs/dota_gcmessages_common_match_management.proto)，`ELaneSelectionFlags`。
 - [OpenDota 位置估计](https://github.com/odota/core/blob/master/svc/util/compute.ts)与[限额配置](https://github.com/odota/core/blob/master/config.ts)。
+
+## 6. 继续采集到 5 万场
+
+用户于 2026-11-13 要求继续执行之前的样本量目标：先以 **5000 场合格、去重对局**作为模型基线检查点，继续到 **50000 场**。原有可恢复样本为 830 场；OneDrive 存取验收副本不增加数量。此阶段采集和保存数据，不训练模型。
+
+此前的数学估算是比例估计的近似公式 `n = 1.96² × p(1-p) / e²`：取最保守的 `p=0.5`，95% 置信水平下，允许误差 ±2 个百分点需要该统计对象约 2401 场，±1 个百分点约 9604 场。出现率 10% 的组合取得 2401 场相关比赛，需要总量约 24010 场；稀有组合需要更多。因此 50000 是初版验证目标，不能保证模型准确率。该公式假设近似独立，采样偏差不会随数量自动消除。[NIST 比例区间](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm)
+
+后续模型评估预留按时间较晚的约 10000 场最终测试，约 35000 场训练、5000 场验证；同一比赛的所有视角放在同一份数据里。通过学习曲线、概率误差和常见英雄／位置／段位的结果判断是否需要继续扩充。本阶段不把数据达标写成精度达标。
+
+续采入口：
+
+```bash
+source /workspace/.cloud-environment/env.sh
+python3 -u scripts/continue_opendota_collection.py
+```
+
+每次只运行一个 UTC 六小时区间（00、06、12、18）的批次，命名如 `ranked-official-20261113T06`。每批最多处理 600 个 ID、使用 675 次 OpenDota 请求（含列表和重试）、每分钟 40 次；四批不超过 2700 次／UTC 日，并根据服务端响应再预留 300 次。免费额度的原始配置为每天 3000 次，不使用付费密钥。
+
+程序先从 OneDrive 读取符合命名规则的完成清单，每次恢复都调用独立 `verify`，回读清单内全部文件（含原始归档）的大小与 SHA-256，并确认校验使用的清单 SHA-256 与本次读取一致；通过后再核对训练数据、导出报告和独立审计内容，按比赛 ID 合并计数或跳过已完成区间。本地训练缓存不能替代远端全批次校验；上传后独立校验失败的批次，下次恢复须重新校验通过才能计数。原批次清单有固定 SHA-256；相同副本仅计一次，同 ID 内容冲突则停止，不在远端读取失败时把总数重置为零。
+
+已合格的 ID 不再请求详情。停止的采集批次先导出和独立审计，完整原始目录打成小于 200 MiB 的归档；调用已发布的 OneDrive 工具执行上传及逐文件回读，再单独 `verify`，通过后计入总数。路径仍为 `DOTA2_hero_selector/opendota/<batch>/`；每批包含原始归档、训练集、逐场来源及报告。新数据不整批提交到 GitHub。
+
+每个区间先在 OneDrive 写入并回读 `run-claim.json`，避免新任务丢失本地状态后再次消耗同一区间的额度；同一工作区有进程锁。只有同一自动任务串行执行，不并发启动其他采集器。若任务中断且本地文件丢失，该区间保留占用，不算数据成功；后续区间继续补齐。已有完整批次只读取计数，不重新采集。
+
+本地状态位于 `data/opendota-continuation/`，原始数据在 `data/opendota/<batch>/`。`latest-result.json` 仅在本轮整个流程成功后写入；失败时以进程退出码为准，不把旧报告当成本轮成功。`--batch <已有批次>` 可完成本地保留的停止批次；不允许借用旧区间启动额外采集。达到 50000 场时不再请求比赛；发现版本变化时保留当前批次并报告，后续自动任务须暂停讨论版本范围。
+
+采样仍受 OpenDota 公共比赛列表覆盖限制；分散运行时段和日期改善现有 13 分钟的覆盖，但不构成全体天梯的均匀随机抽样。

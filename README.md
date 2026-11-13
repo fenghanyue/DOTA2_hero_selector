@@ -18,6 +18,8 @@ python -m unittest discover -s tests -v
 
 `--source ranked` 通过 Explorer 直接取得全英雄选择天梯 ID，再读取 Valve 元数据中的官方职责，无需先解析录像。`--detail-limit 100` 表示处理 100 个比赛 ID，成功和失败都计入，合格样本需要另行检查版本、职责、英雄、胜负、时长和离开状态。
 
-完整运行数据保存在云工作区的 `data/`，默认由 Git 忽略；训练数据和报告需显式提交到 `samples/`，完整原始数据另做 GitHub 归档。目录存在于云环境不等于已经保存到你的电脑或 GitHub。历史计数与当前可恢复数据请以进展文档中最新日期的记录为准。
+完整运行数据保存在云工作区的 `data/`，默认由 Git 忽略；原 830 场的训练集、报告和完整原始归档另存 GitHub，后续新批次完整数据保存在 OneDrive，GitHub 保留进度、校验报告和代码。目录存在于云环境不等于已经保存到你的电脑或远端。历史计数与当前可恢复数据请以进展文档中最新日期的记录为准。
+
+2026-11-13 续采已新增 498 场合格对局，OneDrive 上传回读、独立校验、完整恢复和解压审计通过，去重总数为 **1328 场**。[实测记录](samples/opendota/continuation-20261113.json)。原定目标是 5000 场基线检查点、50000 场初版验证规模；每日四批续采任务已保存，首次计划触发为北京时间 2026-11-13 22:00 左右，尚待实际触发验证。操作及精度估算见[持续采集说明](docs/opendota-collection.md#6-继续采集到-5-万场)。
 
 OneDrive 的 `upload`、`verify`、`restore` 已完成当前任务真实存取验收和 50 项离线测试。[开发任务实测](samples/opendota/ranked-official-20261112-1000/onedrive-storage-e2e-20261113.json)。2026-11-13 用户重新发布环境后，在独立新任务实测工具自动恢复、授权恢复、原备份校验恢复、新批次上传校验和新批次恢复，五项全部通过。[新任务验收记录](samples/opendota/ranked-official-20261112-1000/onedrive-published-acceptance-20261113.json)。当前约定的临时方案已交付：显式使用 Graph beta 读取，单文件上传上限 200 MiB；原 401 根因仍未确定。操作见 [OneDrive 说明](docs/onedrive-backup.md)。
