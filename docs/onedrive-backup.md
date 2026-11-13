@@ -75,7 +75,7 @@ rclone config show dota_onedrive | base64 | tr -d '\n' | pbcopy
 | 安装脚本 | [cloud/onedrive-install.sh](https://github.com/fenghanyue/DOTA2_hero_selector/blob/7c4546a61b82c7fcd42fb8ddf1ad05b90769ff55/cloud/onedrive-install.sh) | `6eacf4e42e0310e5e4d77ec9c9675dc0fc53de3e92bb860168ae752a234a2675` |
 | Start skill | [cloud/onedrive-start.md](https://github.com/fenghanyue/DOTA2_hero_selector/blob/7c4546a61b82c7fcd42fb8ddf1ad05b90769ff55/cloud/onedrive-start.md) | `2fd9251f9d965e852f7ed4cc9a6e4bc8f8c6df30901537d71258526e03931885` |
 
-安装段将程序固定到提交 `8fc440417014c3a249ad5186a0c3f5b826c571ab`，`onedrive_backup.py` 的 SHA-256 为 `3bbb9dc61f8e1e25cc2432514be128265ebc833940760a3bde09e130c0367408`。两个程序独立保存在 `/workspace/.cloud-environment/onedrive-tools/`，来源记在 `sources.json`；即使项目仍检出尚未包含脚本的 `main`，已发布工具也可使用。安装片段对子进程移除授权变量，不解码授权。
+安装段将程序固定到提交 `8fc440417014c3a249ad5186a0c3f5b826c571ab`，`onedrive_backup.py` 的 SHA-256 为 `3bbb9dc61f8e1e25cc2432514be128265ebc833940760a3bde09e130c0367408`。两个程序独立保存在 `/workspace/.cloud-environment/onedrive-tools/`，来源记在 `sources.json`；已发布工具不依赖工作区检出特定开发分支。安装片段对子进程移除授权变量，不解码授权。
 
 确认实际草稿字段保存、工具准备完成后，再审阅并 **Republish**。发布后用该环境新开任务按第 7 节验收；现有任务保留自己的文件状态。[官方环境复用说明](https://learn.chatgpt.com/docs/environments/cloud-environments#reuse-and-update-saved-state)
 
