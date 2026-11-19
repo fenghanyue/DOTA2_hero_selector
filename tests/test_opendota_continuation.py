@@ -16,10 +16,11 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / 'scripts'))
 import continue_opendota_collection as continuation
 import onedrive_backup as backup
 from test_onedrive_backup import local_batch, memory_remote
+from test_opendota_official import official_fixture
 
 
-def row(mid=1):
-    return {'match_id': mid, 'start_time': 1794559173, 'patch': 60, 'game_mode': 22,
+def row(mid=1, patch_id=60, start_time=1794559173):
+    return {'match_id': mid, 'start_time': start_time, 'patch': patch_id, 'game_mode': 22,
             'lobby_type': 7, 'position_source': 'valve_metadata_lane_selection_flags',
             'radiant': [1, 2, 3, 4, 5], 'dire': [6, 7, 8, 9, 10], 'radiant_win': False,
             'rank_band_est': '传奇', 'rank_known_players': 10}
@@ -47,12 +48,37 @@ class ContinuationTests(unittest.TestCase):
             continuation.merge_rows([[row()], [changed]])
 
     def test_wrong_patch_inferred_roles_and_duplicate_heroes_are_rejected(self):
-        for field, value in [('patch', 61), ('position_source', 'opendota_position_est'),
+        for field, value in [('patch', 62), ('patch', True), ('position_source', 'opendota_position_est'),
                              ('match_id', True), ('radiant_win', 0), ('dire', [1, 7, 8, 9, 10])]:
             changed = row()
             changed[field] = value
             with self.subTest(field=field), self.assertRaises(continuation.ContinuationError):
                 continuation.merge_rows([[changed]])
+
+    def test_historical_and_current_rows_share_the_unique_target(self):
+        old = row(1)
+        current = row(2, 61, int(continuation.PATCH_61_START) + 1)
+        unique, duplicates = continuation.merge_rows([[old], [current, current]])
+        self.assertEqual(len(unique), 2)
+        self.assertEqual(duplicates, 1)
+        with tempfile.TemporaryDirectory() as directory, patch.object(continuation, 'TARGET', 2), patch.object(
+                continuation, 'load_helper'), patch.object(continuation, 'inventory', return_value=(unique, {})), patch.object(
+                continuation, 'claim_slot') as claim, patch.object(continuation, 'collect') as collect:
+            result = continuation.run(pathlib.Path(directory))
+        self.assertEqual(result['status'], 'target_reached')
+        self.assertEqual(result['target_scope'], 'historical_and_current_combined')
+        self.assertEqual(result['collection_patch'], 61)
+        claim.assert_not_called()
+        collect.assert_not_called()
+
+    def test_release_timeline_counts_preserve_delayed_api_labels(self):
+        after = int(continuation.PATCH_61_START) + 1
+        rows = [row(1), row(2, 60, after), row(3, 61, after)]
+        original = copy.deepcopy(rows)
+        counts = continuation.version_counts(rows)
+        self.assertEqual(counts['verified_version_counts_as_reported'], {'7.41': 2, '7.42': 1})
+        self.assertEqual(counts['verified_version_counts_by_start_time'], {'7.41': 1, '7.42': 2})
+        self.assertEqual(rows, original)
 
     def test_target_stops_before_claiming_or_collecting(self):
         backup = Mock()
@@ -168,7 +194,7 @@ class ContinuationTests(unittest.TestCase):
         dataset = (json.dumps(row()) + '\n').encode()
         reports = {'matches.jsonl': dataset, 'report.json': json.dumps({
             'dataset_sha256': hashlib.sha256(dataset).hexdigest(), 'accepted_matches': 1,
-            'integrity_errors': []}).encode(), 'audit.json': json.dumps({
+            'patch': 60, 'integrity_errors': []}).encode(), 'audit.json': json.dumps({
             'passed': True, 'training_matches_checked': 1}).encode()}
         with patch.object(continuation, 'checked_artifact', side_effect=lambda b, c, batch, manifest, name, cache: reports[name]):
             rows, report = continuation.inventory(backup, None, pathlib.Path('/unused'))
@@ -176,6 +202,53 @@ class ContinuationTests(unittest.TestCase):
         backup.load_manifest.assert_called_once()
         self.assertEqual(len(report['completed_batches']), 1)
         backup.verify_batch.assert_called_once_with(None, continuation.ORIGINAL, read_method=continuation.READ_METHOD)
+
+    def test_legacy_rejection_of_patch_61_is_approved_but_new_changes_still_stop(self):
+        batch = 'ranked-official-20261119T06'
+        for export_patch, observed, expected_change in (
+                (60, {'61': 51}, False), (61, {'62': 1}, True),
+                (61, {'60': 1}, True), (60, {'62': 1}, True)):
+            with self.subTest(export_patch=export_patch, observed=observed):
+                backup = Mock()
+                backup.run_rclone.return_value = json.dumps([
+                    {'Name': continuation.ORIGINAL, 'IsDir': True}, {'Name': batch, 'IsDir': True}]).encode()
+                hashes = {continuation.ORIGINAL: continuation.ORIGINAL_MANIFEST_SHA, batch: 'batch-sha'}
+                backup.load_manifest.side_effect = lambda config, name, *args, **kwargs: ({}, b'', hashes[name])
+                backup.verify_batch.side_effect = lambda config, name, **kwargs: {
+                    'passed': True, 'manifest_sha256': hashes[name]}
+                reports = {}
+                for name, rows, version in ((continuation.ORIGINAL, [row(1)], 60), (batch, [], export_patch)):
+                    payload = ''.join(json.dumps(item) + '\n' for item in rows).encode()
+                    reports[name] = {
+                        'matches.jsonl': payload,
+                        'report.json': json.dumps({'patch': version, 'accepted_matches': len(rows),
+                            'dataset_sha256': hashlib.sha256(payload).hexdigest(), 'integrity_errors': [],
+                            'successful_details': len(rows) if name != batch else sum(observed.values()),
+                            'rejection_reason_counts_overlap': {} if name != batch else {
+                                'other_patch': sum(observed.values())}}).encode(),
+                        'audit.json': json.dumps({'passed': True, 'training_matches_checked': len(rows)}).encode(),
+                        'collection-report.json': json.dumps({'patch_counts': observed}).encode(),
+                    }
+                with patch.object(continuation, 'checked_artifact', side_effect=(
+                        lambda b, c, name, manifest, filename, cache: reports[name][filename])):
+                    unique, checked = continuation.inventory(backup, None, pathlib.Path('/unused'))
+                self.assertEqual(set(unique), {1})
+                self.assertEqual(checked['patch_changed'], expected_change)
+
+    def test_export_patch_must_match_every_row_even_when_both_versions_are_supported(self):
+        backup = Mock()
+        backup.run_rclone.return_value = json.dumps([{'Name': continuation.ORIGINAL, 'IsDir': True}]).encode()
+        backup.load_manifest.return_value = ({}, b'', continuation.ORIGINAL_MANIFEST_SHA)
+        backup.verify_batch.return_value = {'passed': True, 'manifest_sha256': continuation.ORIGINAL_MANIFEST_SHA}
+        dataset = (json.dumps(row(1, 61)) + '\n').encode()
+        reports = {'matches.jsonl': dataset, 'report.json': json.dumps({
+            'patch': 60, 'dataset_sha256': hashlib.sha256(dataset).hexdigest(), 'accepted_matches': 1,
+            'integrity_errors': []}).encode(), 'audit.json': json.dumps({
+            'passed': True, 'training_matches_checked': 1}).encode()}
+        with patch.object(continuation, 'checked_artifact', side_effect=(
+                lambda b, c, name, manifest, filename, cache: reports[filename])), self.assertRaises(
+                    continuation.ContinuationError):
+            continuation.inventory(backup, None, pathlib.Path('/unused'))
 
     def test_remote_readback_failure_does_not_commit_new_matches(self):
         backup = Mock()
@@ -188,6 +261,69 @@ class ContinuationTests(unittest.TestCase):
                 continuation.run(pathlib.Path(directory))
             self.assertEqual(inventory.call_count, 1)
             self.assertFalse((pathlib.Path(directory) / 'latest-result.json').exists())
+
+
+class CurrentPatchCollectionTests(unittest.TestCase):
+    def seed_collector(self, source):
+        args = argparse.Namespace(output=str(source), source='ranked', detail_limit=600, rpm=40,
+                                  daily_budget=675, daily_reserve=300, request_limit=675,
+                                  min_duration=720, min_age_hours=2, max_age_days=7, max_list_pages=6)
+        collector = continuation.DeduplicatingCollector(args, {})
+        _, summary = official_fixture()
+        for mid in (100, 99):
+            collector.db.execute('INSERT INTO candidates(match_id,summary) VALUES (?,?)',
+                                 (mid, json.dumps(dict(summary, match_id=mid))))
+        collector.db.commit()
+        collector.db.close()
+        collector.lock.close()
+
+    def response(self, version):
+        raw, _ = official_fixture()
+        raw['patch'] = version
+        raw['start_time'] = int(continuation.PATCH_61_START) + 3600
+        response = io.BytesIO(json.dumps(raw).encode())
+        response.status = 200
+        response.headers = {'x-rate-limit-remaining-day': '2999'}
+        return response
+
+    def test_current_patch_is_exported_and_a_new_patch_stops_after_one_recorded_response(self):
+        for version, accepted, status in ((61, 1, 'detail_trial_complete'), (62, 0, 'paused')):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
+                source, training = pathlib.Path(directory) / 'source', pathlib.Path(directory) / 'training'
+                self.seed_collector(source)
+                with patch.object(continuation, 'TARGET', 1), patch('urllib.request.urlopen',
+                        return_value=self.response(version)) as network, contextlib.redirect_stdout(io.StringIO()):
+                    continuation.collect(source, {})
+                network.assert_called_once()
+                report = json.loads((source / 'report.json').read_text())
+                self.assertEqual(report['status'], status)
+                if version != 61:
+                    self.assertEqual(report['reason'], 'patch_changed')
+                exported = continuation.export_training(source, training, continuation.PATCH)
+                checked = continuation.audit(source, training)
+                self.assertEqual(exported['accepted_matches'], accepted)
+                self.assertTrue(checked['passed'], checked['errors'])
+                self.assertEqual(checked['http_responses_checked'], 1)
+
+    def test_graceful_interrupt_is_auditable_and_never_reuses_a_stopped_budget(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, training = pathlib.Path(directory) / 'source', pathlib.Path(directory) / 'training'
+            self.seed_collector(source)
+            with patch('urllib.request.urlopen', side_effect=[self.response(61), KeyboardInterrupt()]) as network, \
+                    contextlib.redirect_stdout(io.StringIO()):
+                continuation.collect(source, {})
+            self.assertEqual(network.call_count, 2)
+            with patch('urllib.request.urlopen') as retry:
+                continuation.collect(source, {})
+            retry.assert_not_called()
+            with sqlite3.connect(source / 'state.sqlite3') as db:
+                self.assertEqual(db.execute('SELECT count(*) FROM requests').fetchone()[0], 2)
+                self.assertEqual(db.execute('SELECT status,error FROM requests WHERE id=2').fetchone(),
+                                 (None, 'interrupted_before_response_recorded'))
+            continuation.export_training(source, training, continuation.PATCH)
+            checked = continuation.audit(source, training)
+            self.assertTrue(checked['passed'], checked['errors'])
+            self.assertEqual(checked['training_matches_checked'], 1)
 
 
 class ContinuationRecoveryTests(unittest.TestCase):
@@ -231,17 +367,29 @@ class ContinuationRecoveryTests(unittest.TestCase):
                         patch.object(continuation, 'slot_batch', return_value=self.batch)):
             self.contexts.enter_context(patcher)
 
-    def write_training(self, rows):
+    def write_training(self, rows, export_patch=60):
         dataset = ''.join(json.dumps(item) + '\n' for item in rows).encode()
         (self.training / 'matches.jsonl').write_bytes(dataset)
         (self.training / 'report.json').write_text(json.dumps({
             'dataset_sha256': hashlib.sha256(dataset).hexdigest(), 'accepted_matches': len(rows),
-            'integrity_errors': []}))
+            'patch': export_patch, 'integrity_errors': []}))
         (self.training / 'audit.json').write_text(json.dumps({'passed': True, 'training_matches_checked': len(rows)}))
 
     def publish_batch(self):
         backup.upload_batch(self.config, self.archive, self.training, self.batch,
                             self.root / 'upload.json', continuation.READ_METHOD)
+
+    def test_real_storage_recovery_combines_legacy_and_current_exports(self):
+        self.write_training([row(2, 61, int(continuation.PATCH_61_START) + 1)], export_patch=61)
+        self.publish_batch()
+        with patch.object(continuation, 'claim_slot') as claim, patch.object(continuation, 'collect') as collect:
+            result = continuation.run(self.work, self.batch)
+        self.assertEqual(result['status'], 'slot_complete')
+        self.assertEqual(result['verified_unique_matches'], 2)
+        self.assertEqual(result['verified_version_counts_as_reported'], {'7.41': 1, '7.42': 1})
+        self.assertEqual(result['verified_version_counts_by_start_time'], {'7.41': 1, '7.42': 1})
+        claim.assert_not_called()
+        collect.assert_not_called()
 
     def test_published_manifest_after_failed_verify_blocks_restart_before_count_or_collection(self):
         check_file = backup.check_file

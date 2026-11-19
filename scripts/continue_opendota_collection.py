@@ -17,7 +17,7 @@ import sqlite3
 import subprocess
 import uuid
 
-from collect_opendota import Collector, write_json
+from collect_opendota import Collector, PauseCollection, write_json
 from export_opendota_training import export_training
 from audit_opendota_official import audit
 
@@ -29,7 +29,12 @@ ORIGINAL = 'ranked-official-20261112-1000'
 ORIGINAL_MANIFEST_SHA = '317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73'
 BATCH_PATTERN = re.compile(r'ranked-official-\d{8}T(?:00|06|12|18)$')
 TARGET = 50000
-PATCH = 60
+PATCH = 61  # OpenDota ID for 7.42; newly collected rows must use this patch.
+HISTORICAL_PATCHES = frozenset((60, 61))
+PATCH_NAMES = {60: '7.41', 61: '7.42'}
+PATCH_61_START_UTC = '2026-11-18T21:28:07.019+00:00'
+PATCH_61_START = dt.datetime.fromisoformat(PATCH_61_START_UTC).timestamp()
+PATCH_TABLE_BLOB = '272ebad0884851586d6a4d51155890d71c4f420d'
 DETAILS_PER_SLOT = 600
 REQUESTS_PER_SLOT = 675  # Four UTC slots <= 2700; leave 300 of the free 3000.
 READ_METHOD = 'graph-contentstream'
@@ -64,7 +69,8 @@ def merge_rows(datasets):
     for rows in datasets:
         for row in rows:
             mid = row.get('match_id')
-            if (type(mid) is not int or mid <= 0 or row.get('patch') != PATCH
+            if (type(mid) is not int or mid <= 0
+                    or type(row.get('patch')) is not int or row['patch'] not in HISTORICAL_PATCHES
                     or row.get('game_mode') != 22 or row.get('lobby_type') != 7
                     or row.get('position_source') != 'valve_metadata_lane_selection_flags'
                     or type(row.get('radiant_win')) is not bool
@@ -81,6 +87,23 @@ def merge_rows(datasets):
                 duplicates += 1
             unique[mid] = row
     return unique, duplicates
+
+
+def version_counts(rows):
+    """Report the current release timeline without changing captured API labels."""
+    rows = list(rows)
+    return {
+        'verified_version_counts_as_reported': dict(collections.Counter(
+            PATCH_NAMES[row['patch']] for row in rows)),
+        'verified_version_counts_by_start_time': dict(collections.Counter(
+            '7.42' if row['start_time'] >= PATCH_61_START else '7.41' for row in rows)),
+        'version_count_basis': {
+            'method': 'OpenDota patch release timeline; original rows and raw responses are unchanged',
+            'patch_61_start_utc': PATCH_61_START_UTC,
+            'patch_table_git_blob_sha1': PATCH_TABLE_BLOB,
+            'source': 'https://github.com/odota/dotaconstants/blob/master/build/patch.json',
+        },
+    }
 
 
 def checked_artifact(backup, config, batch, manifest, name, cache):
@@ -126,14 +149,34 @@ def inventory(backup, config, cache):
         audited = json.loads(checked_artifact(backup, config, batch, manifest, 'audit.json', cache))
         rows = [json.loads(line) for line in dataset.splitlines()]
         merge_rows([rows])
-        if (report.get('dataset_sha256') != hashlib.sha256(dataset).hexdigest()
+        report_patch = report.get('patch')
+        if (type(report_patch) is not int or report_patch not in HISTORICAL_PATCHES
+                or any(row['patch'] != report_patch for row in rows)
+                or report.get('dataset_sha256') != hashlib.sha256(dataset).hexdigest()
                 or report.get('accepted_matches') != len(rows) or report.get('integrity_errors')
                 or audited.get('passed') is not True or audited.get('training_matches_checked') != len(rows)
                 or len({r['match_id'] for r in rows}) != len(rows)):
             raise ContinuationError(f'Count, export SHA-256, or audit mismatch: {batch}')
         datasets.append(rows)
-        patch_changed |= bool(report.get('rejection_reason_counts_overlap', {}).get('other_patch'))
-        completed.append({'batch': batch, 'accepted_matches': len(rows), 'manifest_sha256': manifest_sha})
+        other_patch = report.get('rejection_reason_counts_overlap', {}).get('other_patch', 0)
+        if type(other_patch) is not int or other_patch < 0:
+            raise ContinuationError(f'Invalid rejected patch count: {batch}')
+        if other_patch:
+            # A legacy patch-60 export rejected the now-approved patch 61. Read the
+            # verified collection report rather than treating that old stop as a new change.
+            collected = json.loads(checked_artifact(
+                backup, config, batch, manifest, 'collection-report.json', cache))
+            observed = collected.get('patch_counts')
+            if (not isinstance(observed, dict) or not observed
+                    or any(not isinstance(key, str) or type(count) is not int or count < 0
+                           for key, count in observed.items())
+                    or sum(observed.values()) != report.get('successful_details')):
+                raise ContinuationError(f'Invalid collection patch counts: {batch}')
+            patch_ids = {key for key, count in observed.items() if count}
+            patch_changed |= bool(patch_ids - {str(patch) for patch in HISTORICAL_PATCHES})
+            patch_changed |= report_patch == PATCH and bool(patch_ids - {str(PATCH)})
+        completed.append({'batch': batch, 'accepted_matches': len(rows), 'patch': report_patch,
+                          'manifest_sha256': manifest_sha})
     unique, duplicates = merge_rows(datasets)
     return unique, {'completed_batches': completed, 'unfinished_batches': unfinished,
                     'duplicate_rows_not_counted': duplicates, 'patch_changed': patch_changed}
@@ -176,6 +219,21 @@ class DeduplicatingCollector(Collector):
         filters['already_in_verified_training'] = filters.get('already_in_verified_training', 0) + len(repeated)
         self.set_meta('summary_filters', filters)
 
+    def collect_detail(self, candidate):
+        super().collect_detail(candidate)
+        result = self.db.execute('SELECT normalized FROM candidates WHERE match_id=? AND status="ok"',
+                                 (candidate['match_id'],)).fetchone()
+        if result is not None and json.loads(result[0])['match'].get('patch') != PATCH:
+            # Stop after recording the response, so the partial batch remains auditable.
+            raise PauseCollection('patch_changed')
+
+
+def mark_interrupted_requests(db):
+    """Keep interrupted requests charged without inventing an HTTP response."""
+    db.execute('UPDATE requests SET error=? WHERE status IS NULL AND error IS NULL',
+               ('interrupted_before_response_recorded',))
+    db.commit()
+
 
 def collect(source, known_ids):
     remaining = TARGET - len(known_ids)
@@ -185,6 +243,12 @@ def collect(source, known_ids):
     if report_path.exists():
         previous = json.loads(report_path.read_text())
         if previous['status'] != 'running':
+            database = source / 'state.sqlite3'
+            if database.is_file():
+                with (source / '.collector.lock').open('a') as lock:
+                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    with sqlite3.connect(database) as db:
+                        mark_interrupted_requests(db)
             return  # Seal this slot, including any quota/rate-limited partial batch.
     args = argparse.Namespace(output=str(source), source='ranked', detail_limit=min(DETAILS_PER_SLOT, remaining),
                               rpm=40, daily_budget=REQUESTS_PER_SLOT, daily_reserve=300,
@@ -194,13 +258,14 @@ def collect(source, known_ids):
     try:
         # A killed worker may have logged a request before its response arrived.
         # Keep that request charged; do not invent a response or a successful row.
-        collector.db.execute('UPDATE requests SET error=? WHERE status IS NULL AND error IS NULL',
-                             ('interrupted_before_response_recorded',))
-        collector.db.commit()
+        mark_interrupted_requests(collector.db)
         collector.run()
     finally:
-        collector.db.close()
-        collector.lock.close()
+        try:
+            mark_interrupted_requests(collector.db)
+        finally:
+            collector.db.close()
+            collector.lock.close()
 
 
 def prepare(backup, batch, source, work, known_ids):
@@ -229,7 +294,8 @@ def prepare(backup, batch, source, work, known_ids):
         'previous_verified_unique_matches': len(known_ids), 'accepted_in_batch': len(rows),
         'new_unique_matches': len(unique) - len(known_ids), 'duplicates_not_counted': duplicates,
         'projected_verified_unique_after_upload': len(unique), 'patch': PATCH,
-        'patch_changed': any(int(p) != PATCH for p in stats['patch_counts']),
+        'patch_changed': any(p != str(PATCH) for p, count in stats['patch_counts'].items() if count),
+        **version_counts(unique.values()),
         'start_time_range': exported['start_time_range'], 'http_requests': stats['http_requests'],
         'request_budget_per_utc_slot': REQUESTS_PER_SLOT, 'slots_per_utc_day': 4,
         'sampling': 'Latest public ranked all-pick IDs in four separated UTC slots per day; not a random sample.',
@@ -248,7 +314,9 @@ def run(work, batch=None):
     backup = load_helper()
     config = backup.restore_config()
     known, before = inventory(backup, config, work / 'cache')
-    result = {'target': TARGET, 'verified_unique_before': len(known), **before}
+    result = {'target': TARGET, 'target_scope': 'historical_and_current_combined',
+              'collection_patch': PATCH, 'verified_unique_before': len(known),
+              **before, **version_counts(known.values())}
     if len(known) >= TARGET:
         return result | {'status': 'target_reached', 'verified_unique_matches': len(known)}
     if before.get('patch_changed'):
@@ -280,6 +348,7 @@ def run(work, batch=None):
                      'new_verified_unique_matches': len(after) - len(known),
                      'baseline_checkpoint_reached': len(after) >= 5000,
                      'patch_changed': summary['patch_changed'],
+                     **version_counts(after.values()),
                      'start_time_range_utc': [dt.datetime.fromtimestamp(t, dt.timezone.utc).isoformat()
                                               for t in (min(times), max(times))] if times else None,
                      'rank_band_counts': dict(collections.Counter(r['rank_band_est'] or 'unknown' for r in after.values())),
