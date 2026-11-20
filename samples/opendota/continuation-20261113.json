@@ -1,0 +1,352 @@
+{
+  "created_at": "2026-11-13T10:04:00.297663+00:00",
+  "status": "continuing_toward_target",
+  "target_qualified_unique_matches": 50000,
+  "baseline_checkpoint": 5000,
+  "verified_unique_matches": 1328,
+  "remaining_matches": 48672,
+  "new_matches": 498,
+  "raw_data_in_github": false,
+  "data_location": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T06",
+  "batch_web_url": "https://onedrive.live.com?cid=D7C728493C38ED11&id=D7C728493C38ED11!s85fe390aaed44c38bc2dd39148bf737d",
+  "runner_code_revision": "5e609824df1b68554911f4f2453262a780bddfa9",
+  "tests": {
+    "kind": "local_offline_unittest",
+    "passed": true,
+    "count": 66,
+    "log_sha256": "e98459fa66dceacbb1bbfe824f1be0d8ca7c90120c01838b198d56d4739e021b"
+  },
+  "batch_counts": {
+    "processed_ids": 600,
+    "successful_details": 590,
+    "official_roles_complete": 549,
+    "qualified": 498,
+    "http_requests": 630,
+    "request_limit": 675,
+    "disjoint_outcomes": {
+      "qualified": 498,
+      "detail_failed": 10,
+      "invalid_official_flags": 26,
+      "missing_metadata": 15,
+      "leaver_rejected_after_complete_roles": 51
+    }
+  },
+  "export": {
+    "created_at": "2026-11-13T09:58:07.871412+00:00",
+    "source_directory": "ranked-official-20261113T06",
+    "position_source": "valve_metadata_lane_selection_flags",
+    "patch": 60,
+    "min_duration_seconds": 720,
+    "successful_details": 590,
+    "accepted_matches": 498,
+    "rejected_matches": 92,
+    "rejection_reason_counts_overlap": {
+      "official_role_not_single": 26,
+      "leaver_status_not_0_or_1": 54,
+      "metadata_missing": 15
+    },
+    "integrity_errors": [],
+    "failed_detail_ids": [
+      {
+        "match_id": 9087932275,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087929677,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087929088,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087928419,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087927477,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087927352,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087926184,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087926122,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087925865,
+        "error": "HTTP 500"
+      },
+      {
+        "match_id": 9087925536,
+        "error": "HTTP 500"
+      }
+    ],
+    "dataset_sha256": "2a602921eda331348f5f54642e42143aad2925b713e59fe9f8ed929834cb2ef9",
+    "start_time_range": [
+      1794557702,
+      1794558658
+    ],
+    "rank_band_counts": {
+      "冠绝一世": 36,
+      "万古流芳": 87,
+      "统帅": 95,
+      "传奇": 123,
+      "卫士": 34,
+      "先锋": 8,
+      "中军": 63,
+      "超凡入圣": 52
+    },
+    "rank_known_players_counts": {
+      "10": 336,
+      "9": 110,
+      "8": 28,
+      "7": 7,
+      "2": 1,
+      "6": 13,
+      "3": 1,
+      "5": 1,
+      "1": 1
+    }
+  },
+  "audit": {
+    "created_at": "2026-11-13T09:58:11.262243+00:00",
+    "passed": true,
+    "errors": [],
+    "http_responses_checked": 630,
+    "successful_details_checked": 590,
+    "failed_detail_ids": 10,
+    "official_roles_complete": 549,
+    "unparsed_successful_details": 508,
+    "training_matches_checked": 498,
+    "metadata_team_count_distribution": {
+      "10": 575,
+      "0": 15
+    },
+    "minimum_request_interval_seconds": 1.498098,
+    "checks": [
+      "all HTTP and cached raw SHA-256",
+      "DB / JSONL / both CSVs",
+      "independent Valve flag mapping and hero ordering",
+      "independent rank median",
+      "independent patch / duration / leaver screening",
+      "request budget and pacing",
+      "dataset SHA-256, unique IDs and accepted provenance"
+    ]
+  },
+  "upload": {
+    "created_at": "2026-11-13T09:59:47.789439+00:00",
+    "passed": true,
+    "destination": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T06",
+    "files": [
+      {
+        "path": "raw/ranked-official-20261113T06.tar.zst",
+        "bytes": 41464166,
+        "sha256": "925c5fd5fe38da4871aadccea316a3e90bcc7e953d6b094218fed174b2ab3eb2"
+      },
+      {
+        "path": "training/matches.jsonl",
+        "bytes": 132802,
+        "sha256": "2a602921eda331348f5f54642e42143aad2925b713e59fe9f8ed929834cb2ef9"
+      },
+      {
+        "path": "training/provenance.json",
+        "bytes": 128086,
+        "sha256": "156e6488efafe3e67610abd58bf82bdfaf43e8008fae9d07edee7d73fefd6493"
+      },
+      {
+        "path": "training/report.json",
+        "bytes": 1674,
+        "sha256": "4d24259b596fb8e2f774db7f6a71aef6744d64048c8b364fa935580e1be4eaff"
+      },
+      {
+        "path": "training/collection-report.json",
+        "bytes": 3482,
+        "sha256": "3a86d33a0d32a52c9e757245365faf8395b3c8d5d9bb279de6f03711fed9a961"
+      },
+      {
+        "path": "training/collection-summary.json",
+        "bytes": 635,
+        "sha256": "6b1a08f84c54e4a6eb3776ac9ab83caeb5ffc2f4a86c7d2591a04735c584cf49"
+      },
+      {
+        "path": "training/audit.json",
+        "bytes": 734,
+        "sha256": "87b0a72f6a570bb401067bd426c6086ac863607c8bbf7a024913e1d1320ad3c8"
+      }
+    ],
+    "verification": "downloaded all files and checked SHA-256",
+    "read_method": "graph-contentstream",
+    "experimental_beta": true,
+    "vault_update_required": true
+  },
+  "verify": {
+    "created_at": "2026-11-13T10:00:13.954239+00:00",
+    "passed": true,
+    "operation": "verify",
+    "destination": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T06",
+    "files": [
+      {
+        "path": "raw/ranked-official-20261113T06.tar.zst",
+        "bytes": 41464166,
+        "sha256": "925c5fd5fe38da4871aadccea316a3e90bcc7e953d6b094218fed174b2ab3eb2"
+      },
+      {
+        "path": "training/matches.jsonl",
+        "bytes": 132802,
+        "sha256": "2a602921eda331348f5f54642e42143aad2925b713e59fe9f8ed929834cb2ef9"
+      },
+      {
+        "path": "training/provenance.json",
+        "bytes": 128086,
+        "sha256": "156e6488efafe3e67610abd58bf82bdfaf43e8008fae9d07edee7d73fefd6493"
+      },
+      {
+        "path": "training/report.json",
+        "bytes": 1674,
+        "sha256": "4d24259b596fb8e2f774db7f6a71aef6744d64048c8b364fa935580e1be4eaff"
+      },
+      {
+        "path": "training/collection-report.json",
+        "bytes": 3482,
+        "sha256": "3a86d33a0d32a52c9e757245365faf8395b3c8d5d9bb279de6f03711fed9a961"
+      },
+      {
+        "path": "training/collection-summary.json",
+        "bytes": 635,
+        "sha256": "6b1a08f84c54e4a6eb3776ac9ab83caeb5ffc2f4a86c7d2591a04735c584cf49"
+      },
+      {
+        "path": "training/audit.json",
+        "bytes": 734,
+        "sha256": "87b0a72f6a570bb401067bd426c6086ac863607c8bbf7a024913e1d1320ad3c8"
+      }
+    ],
+    "manifest_sha256": "758d4821a16e5b83396809033919349d73db3315c38bebd6e3e9ece42d8bb10b",
+    "read_method": "graph-contentstream",
+    "experimental_beta": true,
+    "vault_update_required": true
+  },
+  "restore_and_extraction": {
+    "passed": true,
+    "batch": "ranked-official-20261113T06",
+    "data_artifacts_restored": 7,
+    "data_bytes_restored": 41731579,
+    "extracted_files_checked": 1819,
+    "all_extracted_file_sha256_match": true,
+    "restored_independent_audit": {
+      "created_at": "2026-11-13T10:02:42.704716+00:00",
+      "passed": true,
+      "errors": [],
+      "http_responses_checked": 630,
+      "successful_details_checked": 590,
+      "failed_detail_ids": 10,
+      "official_roles_complete": 549,
+      "unparsed_successful_details": 508,
+      "training_matches_checked": 498,
+      "metadata_team_count_distribution": {
+        "10": 575,
+        "0": 15
+      },
+      "minimum_request_interval_seconds": 1.498098,
+      "checks": [
+        "all HTTP and cached raw SHA-256",
+        "DB / JSONL / both CSVs",
+        "independent Valve flag mapping and hero ordering",
+        "independent rank median",
+        "independent patch / duration / leaver screening",
+        "request budget and pacing",
+        "dataset SHA-256, unique IDs and accepted provenance"
+      ]
+    },
+    "manifest_sha256": "758d4821a16e5b83396809033919349d73db3315c38bebd6e3e9ece42d8bb10b"
+  },
+  "global_inventory": {
+    "target": 50000,
+    "verified_unique_before": 830,
+    "completed_batches": [
+      {
+        "batch": "ranked-official-20261112-1000",
+        "accepted_matches": 830,
+        "manifest_sha256": "317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73"
+      }
+    ],
+    "unfinished_batches": [],
+    "duplicate_rows_not_counted": 0,
+    "patch_changed": false,
+    "status": "batch_verified",
+    "batch": "ranked-official-20261113T06",
+    "verified_unique_matches": 1328,
+    "new_verified_unique_matches": 498,
+    "baseline_checkpoint_reached": false,
+    "start_time_range_utc": [
+      "2026-11-12T02:35:42+00:00",
+      "2026-11-13T08:30:58+00:00"
+    ],
+    "rank_band_counts": {
+      "传奇": 384,
+      "超凡入圣": 124,
+      "万古流芳": 218,
+      "中军": 172,
+      "卫士": 97,
+      "统帅": 236,
+      "冠绝一世": 78,
+      "先锋": 19
+    },
+    "verified_inventory": {
+      "completed_batches": [
+        {
+          "batch": "ranked-official-20261112-1000",
+          "accepted_matches": 830,
+          "manifest_sha256": "317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73"
+        },
+        {
+          "batch": "ranked-official-20261113T06",
+          "accepted_matches": 498,
+          "manifest_sha256": "758d4821a16e5b83396809033919349d73db3315c38bebd6e3e9ece42d8bb10b"
+        }
+      ],
+      "unfinished_batches": [],
+      "duplicate_rows_not_counted": 0,
+      "patch_changed": false
+    },
+    "vault_update_required": true
+  },
+  "same_slot_repeat": {
+    "status": "slot_complete",
+    "verified_unique_matches": 1328,
+    "requests_before": 630,
+    "requests_after": 630,
+    "new_opendota_requests": 0
+  },
+  "automation": {
+    "title": "DOTA2 采集至五万场",
+    "saved_enabled": true,
+    "timezone": "Asia/Shanghai",
+    "approximate_local_hours": [
+      4,
+      10,
+      16,
+      22
+    ],
+    "next_run_time": "2026-11-13T22:00:00+08:00",
+    "inherited_environment_confirmed": "DOTA2_hero_selector",
+    "first_scheduled_trigger_verified": false,
+    "stop_at_unique_matches": 50000,
+    "pause_on_patch_change": true
+  },
+  "scope": {
+    "experimental_graph_beta_read": true,
+    "single_file_limit_bytes": 209715200,
+    "model_trained": false,
+    "accuracy_guaranteed": false,
+    "environment_configuration_modified": false,
+    "sampling": "Two narrow windows on 2026-11-12 and 2026-11-13; not a uniform random sample of ranked games."
+  }
+}
