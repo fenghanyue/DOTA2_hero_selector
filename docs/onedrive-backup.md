@@ -131,7 +131,7 @@ python3 /workspace/.cloud-environment/onedrive-tools/onedrive_backup.py restore 
 
 目的地固定在 `DOTA2_hero_selector/opendota/<batch>/`。只上传原始归档和训练白名单文件，文件使用不可变检查、完成清单最后上传。临时上传模式单文件超过 200 MiB 时会在网络操作前停止，应拆小采集批次；不自动改用失败的上传会话。Graph GET 对部分暂时错误最多尝试三次，401/403 不反复重试；长时间限流会要求稍后重试。失败时不生成成功报告。
 
-采集、导出、打包、上传、恢复均在云任务中执行。采集脚本不会自动上传，也没有无人值守或定时计划。原始采集目录需先打包为 `.tar.zst`，按实际目录使用已有 `tar`、`zstd`。OneDrive 不可用时，最初批次仍有[GitHub 原始归档](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)可按其 README 恢复。
+采集、导出、打包、上传、恢复均在云任务中执行。单独运行 `collect_opendota.py` 只采集本地数据；现有定时任务运行 `continue_opendota_collection.py`，按每个 UTC 六小时区间串行完成采集、导出、审计、归档、上传回读和独立校验。第一版模型会话使用 `restore` 读取已完成批次，接手入口见[最新数据进展](opendota-progress.md#第一版模型会话接手入口)。原始采集目录需先打包为 `.tar.zst`，按实际目录使用已有 `tar`、`zstd`。OneDrive 不可用时，最初批次仍有[GitHub 原始归档](https://github.com/fenghanyue/DOTA2_hero_selector/tree/1b4b304ad5a13ea124257f363fcf36288eca6479/backups/20261112)可按其 README 恢复。
 
 ## 6. 授权续期
 

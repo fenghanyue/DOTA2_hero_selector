@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-11-23T08:46:17.638628+00:00",
+  "verification_completed_at_utc": "2026-11-23T02:32:10.771554+00:00",
+  "source_result_sha256": "5b414575ea864785b67f7de39bfe8e301743f5a430172c2ddff59bd6f76e6e2a",
+  "source_result_status": "batch_verified",
+  "source_batch": "ranked-official-20261123T00",
+  "runner_code_revision": "f1a8824063f794ab5a2db2f0764230c3a1c108c8",
+  "target": 50000,
+  "target_scope": "historical_and_current_combined",
+  "verified_unique_matches": 12404,
+  "remaining_matches": 37596,
+  "baseline_checkpoint_reached": true,
+  "verified_version_counts_as_reported": {
+    "7.41": 9406,
+    "7.42": 2998
+  },
+  "verified_version_counts_by_start_time": {
+    "7.41": 8951,
+    "7.42": 3453
+  },
+  "version_count_basis": {
+    "method": "OpenDota patch release timeline; original rows and raw responses are unchanged",
+    "patch_61_start_utc": "2026-11-18T21:28:07.019+00:00",
+    "patch_table_git_blob_sha1": "272ebad0884851586d6a4d51155890d71c4f420d",
+    "source": "https://github.com/odota/dotaconstants/blob/master/build/patch.json"
+  },
+  "start_time_range_utc": [
+    "2026-11-12T02:35:42+00:00",
+    "2026-11-22T12:49:23+00:00"
+  ],
+  "rank_band_counts": {
+    "传奇": 3372,
+    "超凡入圣": 1055,
+    "万古流芳": 2043,
+    "中军": 1506,
+    "卫士": 840,
+    "统帅": 2514,
+    "冠绝一世": 817,
+    "先锋": 253,
+    "unknown": 4
+  },
+  "remote_root": "dota_onedrive:DOTA2_hero_selector/opendota",
+  "read_method": "graph-contentstream",
+  "single_upload_limit_bytes": 209715200,
+  "remote_verification_scope": "all manifest files including raw archives; manifest SHA-256 must match",
+  "original_manifest_sha256": "317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73",
+  "duplicate_rows_not_counted": 0,
+  "unfinished_batches": [],
+  "completed_batch_count": 39,
+  "completed_batches": [
+    {
+      "batch": "ranked-official-20261112-1000",
+      "accepted_matches": 830,
+      "patch": 60,
+      "manifest_sha256": "317b8db8f3b95fe5973a325376a38d018ddb4103c22b75c3e8eab2fa92156d73",
+      "dataset_sha256": "03c4ef80157f6a008a1b3d7373fe3f855ec20de840d9f2435651cf7e84006988",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261112-1000"
+    },
+    {
+      "batch": "ranked-official-20261113T06",
+      "accepted_matches": 498,
+      "patch": 60,
+      "manifest_sha256": "758d4821a16e5b83396809033919349d73db3315c38bebd6e3e9ece42d8bb10b",
+      "dataset_sha256": "2a602921eda331348f5f54642e42143aad2925b713e59fe9f8ed929834cb2ef9",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T06"
+    },
+    {
+      "batch": "ranked-official-20261113T12",
+      "accepted_matches": 134,
+      "patch": 60,
+      "manifest_sha256": "4f88510377ac4fb7dec742ecc65ae986168de37417b409bae40ad61dbbb244bb",
+      "dataset_sha256": "0f27f368d19337edbdd8509a5d91a0608822e319d7ccd894dff8aef33195ab2e",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T12"
+    },
+    {
+      "batch": "ranked-official-20261113T18",
+      "accepted_matches": 417,
+      "patch": 60,
+      "manifest_sha256": "36e6d8b0c88a8fc0f790b4ff5003a7368518587fa6b89502faeab0c97d97a214",
+      "dataset_sha256": "b73f8ec8cf9be54b747e01898f2ef390f9ae62790dc102a3a35f0f5396621dbf",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261113T18"
+    },
+    {
+      "batch": "ranked-official-20261114T00",
+      "accepted_matches": 473,
+      "patch": 60,
+      "manifest_sha256": "fd048e8fd3731df5d9acefc3668e729a244c0ac19f68a185a4fc7d8081791357",
+      "dataset_sha256": "e7ba2afa59603558040617dbe5fc0f4a0255023a346e1252f9ad662daa97c80c",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261114T00"
+    },
+    {
+      "batch": "ranked-official-20261114T06",
+      "accepted_matches": 475,
+      "patch": 60,
+      "manifest_sha256": "abffc68a5106b6ff83685a830c26df04998fd429fe2af57b0e3dd19fd687a00c",
+      "dataset_sha256": "50ae8fdb255c1b414c01e3c21bed1826e7020d2ae8f5039490d3db0715e83be3",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261114T06"
+    },
+    {
+      "batch": "ranked-official-20261114T12",
+      "accepted_matches": 465,
+      "patch": 60,
+      "manifest_sha256": "15c2e0e33ca8663d54bad4a86c10c09de5f78b87d6f20622b110fad5c47d12f5",
+      "dataset_sha256": "dceee1bbffda30c02b688285d9ec85e4ec43681cd1c844f59df6325f9abee805",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261114T12"
+    },
+    {
+      "batch": "ranked-official-20261114T18",
+      "accepted_matches": 57,
+      "patch": 60,
+      "manifest_sha256": "cbf9b5d78e9920215e297a7fc52e5e4ccfc41096190a404d1a6defe6bf082282",
+      "dataset_sha256": "69776a6c32621f2d66ed72a70b80051f1acbfecf9795363033ede5ca605c615a",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261114T18"
+    },
+    {
+      "batch": "ranked-official-20261115T00",
+      "accepted_matches": 10,
+      "patch": 60,
+      "manifest_sha256": "8d6c4d3abfd5c12423e035354d994ba55592e5d7f5995d987ba41fc9875c4248",
+      "dataset_sha256": "eaf0a5c2ea3ab973b60db95337edd2066f0580ad95128ebb06d1cdc1bacc7ab1",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261115T00"
+    },
+    {
+      "batch": "ranked-official-20261115T06",
+      "accepted_matches": 480,
+      "patch": 60,
+      "manifest_sha256": "0130677f06fe15fefdbd97f95d934edfeeb1080c95d2bfde3ee03687cc233c33",
+      "dataset_sha256": "e20109e01afe975b4f8c51f4e58f372be356c5fe8b1f69359eb6f5c65f60a887",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261115T06"
+    },
+    {
+      "batch": "ranked-official-20261115T12",
+      "accepted_matches": 36,
+      "patch": 60,
+      "manifest_sha256": "10003fcfe494851c7a2522fafbbbc78bae5dbcf6bc151c6e9b2d6679bd3d5447",
+      "dataset_sha256": "4aaa6ac723cdfb5b99e0fb2abe1fe7fe67e4f0a694f182bbcf2b072ec6b15cd5",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261115T12"
+    },
+    {
+      "batch": "ranked-official-20261115T18",
+      "accepted_matches": 10,
+      "patch": 60,
+      "manifest_sha256": "13539b8a7c3bd447c3404811ea0f9ed41a61192620e660b35f53de432bcdeeb1",
+      "dataset_sha256": "64cd965e23d66855da59e59f8c4d011beb11a3b543cec35ff6ea7555294a7714",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261115T18"
+    },
+    {
+      "batch": "ranked-official-20261116T00",
+      "accepted_matches": 480,
+      "patch": 60,
+      "manifest_sha256": "fffbf70d854e8307e0f06f7b3a1327bce182bf7b5a3a77a9b30c5078a483775a",
+      "dataset_sha256": "721946734f34cc57431c20a932014c5c606672a1609c33710dd21431e17c2aed",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261116T00"
+    },
+    {
+      "batch": "ranked-official-20261116T06",
+      "accepted_matches": 482,
+      "patch": 60,
+      "manifest_sha256": "422160085efc2a872e781f0b9d17078fb9678f4d0ea8cb8941545acefa69b707",
+      "dataset_sha256": "479f8369b01e3b7a8919e306ab5fdf60807364fe095b3d6253aeee5e0e5d4dbe",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261116T06"
+    },
+    {
+      "batch": "ranked-official-20261116T18",
+      "accepted_matches": 449,
+      "patch": 60,
+      "manifest_sha256": "50aafabf50249de5fd3efdfaca0f9532f22633dba941d21ede836de8ac3a9412",
+      "dataset_sha256": "5d37c2658e4df41269e52ef14dce84008b30ae4e3ad739b45efe55f3fcf9e735",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261116T18"
+    },
+    {
+      "batch": "ranked-official-20261117T00",
+      "accepted_matches": 494,
+      "patch": 60,
+      "manifest_sha256": "3364bb913a7d3f029878f6e9854d3cb1eca7acec552140b73a87f79534f70dcd",
+      "dataset_sha256": "f6f5a488da4c69efdfd3469fe01e8680c73bb47922837c055a72ccbe37402ccb",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261117T00"
+    },
+    {
+      "batch": "ranked-official-20261117T06",
+      "accepted_matches": 484,
+      "patch": 60,
+      "manifest_sha256": "7151a3776628c39e0002d02adbe76fc903ff350a920d82970eb48a460fe3b45a",
+      "dataset_sha256": "2deded748e791b2f1c30b20b687abb1a9bd5d6d8bfe997c3b642e8f9a2f19652",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261117T06"
+    },
+    {
+      "batch": "ranked-official-20261117T12",
+      "accepted_matches": 424,
+      "patch": 60,
+      "manifest_sha256": "bda3dadb9082a1a95fd69bd009a73867385f2f4d212de7ae1a343167b6afb81b",
+      "dataset_sha256": "20c59013b4ffc87c5462fbda7f4f411187ce80744ae1107331c9054d148e51fa",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261117T12"
+    },
+    {
+      "batch": "ranked-official-20261117T18",
+      "accepted_matches": 422,
+      "patch": 60,
+      "manifest_sha256": "4b7f730df393432c593efa37e3e10f2716e84724c226f30dced86330e2d950d6",
+      "dataset_sha256": "820d213adafeba095bdf28ba91cd6dde3e460ba9f6ca31fa6f85af8e0e99bc7c",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261117T18"
+    },
+    {
+      "batch": "ranked-official-20261118T00",
+      "accepted_matches": 476,
+      "patch": 60,
+      "manifest_sha256": "f067d3c095f289b01db8862595ab56a615462a1d825a870acc6fea4d975a5d75",
+      "dataset_sha256": "9a86dd90e30a8832de52e21b0cada37099d68bce0e9c398b5f4011a1816083e3",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261118T00"
+    },
+    {
+      "batch": "ranked-official-20261118T06",
+      "accepted_matches": 456,
+      "patch": 60,
+      "manifest_sha256": "e19d1c336d52cb82223e6a697a2ac71fb115b0c222acf030fedaca1fef1ff8c3",
+      "dataset_sha256": "374b8da6db6780fdf43ff2ecec8a39d9400adfd8f598e9b629cc09996a94ae16",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261118T06"
+    },
+    {
+      "batch": "ranked-official-20261118T12",
+      "accepted_matches": 437,
+      "patch": 60,
+      "manifest_sha256": "8dba991774f065c54ebdaef839ac85a919b8ddcee500a644ad2e7ceae3c7d5c0",
+      "dataset_sha256": "baa64b988edabf542cc47f1f6f388d74ba4052eac8fdcc3d6daceb7e9402e44d",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261118T12"
+    },
+    {
+      "batch": "ranked-official-20261118T18",
+      "accepted_matches": 462,
+      "patch": 60,
+      "manifest_sha256": "63c648e7fae8e26705b610b31a85a7f1f548936d7bd4b21fadad554d914df89d",
+      "dataset_sha256": "fd633043f34241cba7d0343c1094ac892e5d5a5c375aea7f323e91e7519e382b",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261118T18"
+    },
+    {
+      "batch": "ranked-official-20261119T00",
+      "accepted_matches": 455,
+      "patch": 60,
+      "manifest_sha256": "06ab82276977cf959e39a881662a33ac5bf46f3d2bafeee6dcc587950366d938",
+      "dataset_sha256": "6032b75d32b532c7d666e8227fce98ada27083147fa0f243011c653a7f367d5c",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261119T00"
+    },
+    {
+      "batch": "ranked-official-20261119T06",
+      "accepted_matches": 0,
+      "patch": 60,
+      "manifest_sha256": "55acc271385b4ebec8f020af1478650f7a1bb5b09a9154b9c0ceb58d72380c5a",
+      "dataset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261119T06"
+    },
+    {
+      "batch": "ranked-official-20261119T12",
+      "accepted_matches": 126,
+      "patch": 61,
+      "manifest_sha256": "71eb116e0d0c6d7113f751ee8928099d145583e5e236e801c37dd546ea7b8956",
+      "dataset_sha256": "c4b6b0f6798f669914519c733ac686f5f194850a9f6c8e53a5a4bf4242baea8e",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261119T12"
+    },
+    {
+      "batch": "ranked-official-20261119T18",
+      "accepted_matches": 52,
+      "patch": 61,
+      "manifest_sha256": "04518abc2bb75efecdc2df047e316b8410ea823d8e6c7bd77a6c300a15b8bf5b",
+      "dataset_sha256": "2f0304fdd3250155532e4b1d6449fcef6009954f4df48b377d6d53f84f34fb58",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261119T18"
+    },
+    {
+      "batch": "ranked-official-20261120T00",
+      "accepted_matches": 500,
+      "patch": 61,
+      "manifest_sha256": "7369ce7d883d632f97523895a112a6e11f9c4439cb0b7804c28fbb84c372f021",
+      "dataset_sha256": "16fe90f9f3798355c392cf6527fc9560b0cfa763c1dcccb236ed95e3ed550d17",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261120T00"
+    },
+    {
+      "batch": "ranked-official-20261120T06",
+      "accepted_matches": 479,
+      "patch": 61,
+      "manifest_sha256": "da57dab002fd167c376beccc32cc0f3ea584440dcc3c0d92810bf45f24e8e214",
+      "dataset_sha256": "dac95da3eafbb5525f2e8cd74d8d9a488352727c6cd56765e649fc41f0fbd830",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261120T06"
+    },
+    {
+      "batch": "ranked-official-20261120T12",
+      "accepted_matches": 403,
+      "patch": 61,
+      "manifest_sha256": "4ca42433a9cb4ec9240d84480461d790c94a4590d34102d940bde77f779986ff",
+      "dataset_sha256": "e495d9df65c8b1f0bce78d1701658344c452150e6d54e19120c54111a9bcc023",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261120T12"
+    },
+    {
+      "batch": "ranked-official-20261121T00",
+      "accepted_matches": 442,
+      "patch": 61,
+      "manifest_sha256": "f18d5c7934aa0c4a83e97f383460294efaa58e908cf51f4f2fc96e07115dfba4",
+      "dataset_sha256": "ac2748f9e1e70e1cfe6e301f2d13564a85d8756767fc8082f3c5d422a33d61a1",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261121T00"
+    },
+    {
+      "batch": "ranked-official-20261121T06",
+      "accepted_matches": 454,
+      "patch": 61,
+      "manifest_sha256": "1f48a61670600d89488c580e8317395166f2f8f791da0c4c9c0a2c158f2f64dc",
+      "dataset_sha256": "80a19aeabf9a61587548c2fba4423a6b20dd04222ddb6d135e840fdf8a3d8fb6",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261121T06"
+    },
+    {
+      "batch": "ranked-official-20261121T12",
+      "accepted_matches": 463,
+      "patch": 61,
+      "manifest_sha256": "1627e2bfce414fe2ae7ac69a602320a775b6619a7e0f71623c0b9601e487a4fe",
+      "dataset_sha256": "ab776e308084c6bc855aa0e88c682c49aff6cfe3b68c7b5166ba454ef0e84e45",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261121T12"
+    },
+    {
+      "batch": "ranked-official-20261121T18",
+      "accepted_matches": 4,
+      "patch": 61,
+      "manifest_sha256": "801314ec5fc8cbd291542e05cfd1f5f7fd5f1e9deddcade34042046219aa17ea",
+      "dataset_sha256": "faef84f2b1e5e01d6398a13e11803cde0c4a2e5393383dac9876873258c7eac1",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261121T18"
+    },
+    {
+      "batch": "ranked-official-20261122T00",
+      "accepted_matches": 7,
+      "patch": 61,
+      "manifest_sha256": "ef274db0e57ea01e628d581d75267c432ca32f66633c655d299f6f2beada4a5c",
+      "dataset_sha256": "f3507e3cc3b7956120a7b0ab26c6503ec68a8320f4bcebee7c988222734b9a2b",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261122T00"
+    },
+    {
+      "batch": "ranked-official-20261122T06",
+      "accepted_matches": 20,
+      "patch": 61,
+      "manifest_sha256": "953c3798de5247ce05c3ccf53d9e003ed0a6d5e6b1ec62c1f8d3abacb6c99364",
+      "dataset_sha256": "490b948b403f7f634004e5d78e0bf0059fd9971b7bdff133bf61a7b422b265be",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261122T06"
+    },
+    {
+      "batch": "ranked-official-20261122T12",
+      "accepted_matches": 48,
+      "patch": 61,
+      "manifest_sha256": "5090c5a2dc6f43cf307171c70d516fa14b625cb8ca60906fdc43f983b76054e7",
+      "dataset_sha256": "cb930c8107c7da241b11192ea2730fbb8e38483ad82d99f77913665d17f634f2",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261122T12"
+    },
+    {
+      "batch": "ranked-official-20261122T18",
+      "accepted_matches": 0,
+      "patch": 61,
+      "manifest_sha256": "e7bf1d09e1f5a75058746e3657def13c82a61e650732e225aabf5539e856f661",
+      "dataset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261122T18"
+    },
+    {
+      "batch": "ranked-official-20261123T00",
+      "accepted_matches": 0,
+      "patch": 61,
+      "manifest_sha256": "c073ca1b719d286e6110da9cb5555cdf5f0786fcbd74271344c3d863681bc370",
+      "dataset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "remote_path": "dota_onedrive:DOTA2_hero_selector/opendota/ranked-official-20261123T00"
+    }
+  ],
+  "recent_batches": [
+    {
+      "batch": "ranked-official-20261122T12",
+      "processed_ids": 428,
+      "successful_details": 427,
+      "http_requests": 438,
+      "http_status_counts": {
+        "200": 432,
+        "429": 6
+      },
+      "collection_stop_reason": "api_rate_limited",
+      "accepted_matches": 48,
+      "rejection_reason_counts_overlap": {
+        "metadata_fetch_error": 339,
+        "leaver_status_not_0_or_1": 37,
+        "metadata_missing": 35,
+        "official_role_not_single": 4
+      },
+      "independent_remote_verify_passed": true,
+      "manifest_sha256": "5090c5a2dc6f43cf307171c70d516fa14b625cb8ca60906fdc43f983b76054e7"
+    },
+    {
+      "batch": "ranked-official-20261122T18",
+      "processed_ids": 60,
+      "successful_details": 59,
+      "http_requests": 63,
+      "http_status_counts": {
+        "200": 60,
+        "429": 3
+      },
+      "collection_stop_reason": "api_rate_limited",
+      "accepted_matches": 0,
+      "rejection_reason_counts_overlap": {
+        "metadata_fetch_error": 42,
+        "leaver_status_not_0_or_1": 14,
+        "metadata_missing": 16
+      },
+      "independent_remote_verify_passed": true,
+      "manifest_sha256": "e7bf1d09e1f5a75058746e3657def13c82a61e650732e225aabf5539e856f661"
+    },
+    {
+      "batch": "ranked-official-20261123T00",
+      "processed_ids": 5,
+      "successful_details": 1,
+      "http_requests": 12,
+      "http_status_counts": {
+        "None": 10,
+        "200": 2
+      },
+      "collection_stop_reason": "interrupted",
+      "accepted_matches": 0,
+      "rejection_reason_counts_overlap": {
+        "metadata_fetch_error": 1,
+        "leaver_status_not_0_or_1": 1
+      },
+      "independent_remote_verify_passed": true,
+      "manifest_sha256": "c073ca1b719d286e6110da9cb5555cdf5f0786fcbd74271344c3d863681bc370"
+    }
+  ],
+  "excluded_in_flight_batch_at_generation": "ranked-official-20261123T06",
+  "model_status": "not_implemented",
+  "next_session_entry": "docs/opendota-progress.md#第一版模型会话接手入口",
+  "continuation_training_rows_in_github": false,
+  "continuation_raw_responses_in_github": false,
+  "test_validation": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "kind": "offline_unittest",
+    "passed": true,
+    "count": 77,
+    "log_sha256": "2ddae5757f4a9bd5237c342ea3a6fa0637c6b0f5c2db8a996454bd3e5349c8f6"
+  }
+}
